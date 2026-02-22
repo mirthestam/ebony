@@ -13,18 +13,18 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
     private CancellationTokenSource? _loadCts;
     private readonly ILogger<PlaylistsPagePresenter> _logger;
     private readonly IAria _aria;
-    private readonly ResourceTextureLoader _textureLoader;
+    private readonly ArtAssetLoader _loader;
     private readonly IPlaylistNameValidator _playlistNameValidator;
 
     public PlaylistsPagePresenter(ILogger<PlaylistsPagePresenter> logger,
         IAria aria,
-        ResourceTextureLoader textureLoader,
+        ArtAssetLoader loader,
         IPlaylistNameValidator playlistNameValidator,
         IMessenger messenger)
     {
         _logger = logger;
         _aria = aria;
-        _textureLoader = textureLoader;
+        _loader = loader;
         _playlistNameValidator = playlistNameValidator;
         
         messenger.RegisterAll(this);
@@ -148,7 +148,7 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
 
         try
         {
-            model.CoverTexture = await _textureLoader.LoadFromAlbumResourceAsync(artId, ct);
+            model.CoverArt = await _loader.LoadFromAssetAsync(artId, ct);
         }
         catch (OperationCanceledException)
         {

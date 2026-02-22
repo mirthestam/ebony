@@ -155,9 +155,9 @@ public partial class AlbumPage
         base.Dispose();
     }
 
-    public void SetCover(Texture texture)
+    public void SetCoverArt(Art art)
     {
-        _coverPicture.SetPaintable(texture);
+        _coverPicture.SetPaintable(art.Paintable);
     }
 
     private void UpdateHeader()

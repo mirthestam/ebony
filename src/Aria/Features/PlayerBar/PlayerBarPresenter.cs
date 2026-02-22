@@ -17,17 +17,17 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
     private readonly IAria _aria;
     private readonly ILogger<PlayerBarPresenter> _logger;
     private readonly IMessenger _messenger;
-    private readonly ResourceTextureLoader _resourceTextureLoader;
-    private Texture? _currentCoverTexture;    
+    private readonly ArtAssetLoader _artAssetLoader;
+    private Art? _currentCoverArt;    
     private PlayerBar? _view;
 
     private CancellationTokenSource? _coverArtCancellationTokenSource;
 
     public PlayerBarPresenter(IAria aria, IMessenger messenger, ILogger<PlayerBarPresenter> logger,
-        ResourceTextureLoader resourceTextureLoader)
+        ArtAssetLoader artAssetLoader)
     {
         _logger = logger;
-        _resourceTextureLoader = resourceTextureLoader;
+        _artAssetLoader = artAssetLoader;
         _aria = aria;
         _messenger = messenger;
         messenger.Register<PlayerStateChangedMessage>(this);
@@ -72,11 +72,11 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
 
         await GtkDispatch.InvokeIdleAsync(() =>
         {
-            _view?.ClearCover();
+            _view?.ClearCoverArt();
         });
         
-        _currentCoverTexture?.Dispose();
-        _currentCoverTexture = null;
+        _currentCoverArt?.Dispose();
+        _currentCoverArt = null;
     }
 
     public async void Receive(PlayerStateChangedMessage message)
@@ -171,29 +171,29 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
             {
                 await GtkDispatch.InvokeIdleAsync(() =>
                 {
-                    _view?.ClearCover();
+                    _view?.ClearCoverArt();
                 }, cancellationToken);
                 
-                _currentCoverTexture?.Dispose();
-                _currentCoverTexture = null;
+                _currentCoverArt?.Dispose();
+                _currentCoverArt = null;
                 
                 return;
             }
 
             var coverInfo = track.Track.Assets.FrontCover;
-            var newCoverTexture = await _resourceTextureLoader.LoadFromAlbumResourceAsync(coverInfo?.Id ?? Id.Empty, cancellationToken);
+            var newCoverArt = await _artAssetLoader.LoadFromAssetAsync(coverInfo?.Id ?? Id.Empty, cancellationToken);
             if (cancellationToken.IsCancellationRequested) return;
-            if (newCoverTexture == null) return;
+            if (newCoverArt == null) return;
 
-            var previousCoverTexture = _currentCoverTexture;
-            _currentCoverTexture = newCoverTexture;
+            var previousCoverArt = _currentCoverArt;
+            _currentCoverArt = newCoverArt;
 
             await GtkDispatch.InvokeIdleAsync(() =>
             {
-                _view?.LoadCover(newCoverTexture);
+                _view?.LoadCoverArt(newCoverArt);
             }, cancellationToken);
             
-            previousCoverTexture?.Dispose();
+            previousCoverArt?.Dispose();
         }
         catch (OperationCanceledException)
         {

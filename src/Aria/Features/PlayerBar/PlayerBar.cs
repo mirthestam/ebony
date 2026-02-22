@@ -29,13 +29,13 @@ public partial class PlayerBar
         AddController(idWrapperDropTarget);
     }
 
-    public void LoadCover(Texture texture)
+    public void LoadCoverArt(Art art)
     {
         _coverPicture.Visible = true;
-        _coverPicture.SetPaintable(texture);
+        _coverPicture.SetPaintable(art.Paintable);
     }
 
-    public void ClearCover()
+    public void ClearCoverArt()
     {
         _coverPicture.Visible = false;
         _coverPicture.SetPaintable(null);

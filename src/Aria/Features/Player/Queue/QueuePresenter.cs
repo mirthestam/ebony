@@ -14,7 +14,7 @@ namespace Aria.Features.Player.Queue;
 public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRecipient<PlayerStateChangedMessage>
 {
     private readonly ILogger<QueuePresenter> _logger;
-    private readonly ResourceTextureLoader _resourceTextureLoader;
+    private readonly ArtAssetLoader _artAssetLoader;
     private readonly IMessenger _messenger;
     private readonly IAria _aria;
 
@@ -45,7 +45,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         foreach (var model in _modelsByQueueTrackId.Values)
         {
             // Triggers disposal of the unmanaged texture via the property setter
-            model.CoverTexture = null;
+            model.CoverArt = null;
             
             // Release managed wrapper ref (GObject) held by our cache
             model.Dispose();            
@@ -54,10 +54,10 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         _modelsByQueueTrackId.Clear();       
     }        
 
-    public QueuePresenter(IMessenger messenger, IAria aria, ILogger<QueuePresenter> logger, ResourceTextureLoader resourceTextureLoader)
+    public QueuePresenter(IMessenger messenger, IAria aria, ILogger<QueuePresenter> logger, ArtAssetLoader artAssetLoader)
     {
         _logger = logger;
-        _resourceTextureLoader = resourceTextureLoader;
+        _artAssetLoader = artAssetLoader;
         _messenger = messenger;
         _aria = aria;
         _messenger.Register<QueueStateChangedMessage>(this);
@@ -210,7 +210,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
             
             foreach (var obsoleteModel in modelsToDispose)
             {
-                obsoleteModel.CoverTexture = null;
+                obsoleteModel.CoverArt = null;
                 obsoleteModel.Dispose();
             }
             
@@ -243,7 +243,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
                 async (model, token) =>
                 {
                     ct.ThrowIfCancellationRequested();
-                    if (model.CoverTexture != null) return;
+                    if (model.CoverArt != null) return;
                     await LoadArtForModelAsync(model, token);
                 });
             
@@ -265,7 +265,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         
         try
         {
-            model.CoverTexture = await _resourceTextureLoader.LoadFromAlbumResourceAsync(artId, ct).ConfigureAwait(false);
+            model.CoverArt = await _artAssetLoader.LoadFromAssetAsync(artId, ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {

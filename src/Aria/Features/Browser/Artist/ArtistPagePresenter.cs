@@ -13,7 +13,7 @@ public partial class ArtistPagePresenter(
     ILogger<ArtistPagePresenter> logger,
     IMessenger messenger,
     IAria aria,
-    ResourceTextureLoader textureLoader)
+    ArtAssetLoader artLoader)
 {
     private CancellationTokenSource? _loadArtistCancellationTokenSource;
 
@@ -86,7 +86,7 @@ public partial class ArtistPagePresenter(
 
         try
         {
-            model.CoverTexture = await textureLoader.LoadFromAlbumResourceAsync(artId, ct);
+            model.CoverArt = await artLoader.LoadFromAssetAsync(artId, ct);
         }
         catch (Exception e)
         {

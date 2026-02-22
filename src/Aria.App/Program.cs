@@ -70,7 +70,7 @@ public class Program
                 x.AddSingleton<ILibrary>(sp => sp.GetRequiredService<IAria>().Library);
                 
                 x.AddSingleton<IConnectionProfileProvider, ConnectionProfileProvider>();
-                x.AddSingleton<ResourceTextureLoader>();
+                x.AddSingleton<ArtAssetLoader>();
                 x.AddTransient<ITagParser, PicardTagParser>();
                 x.AddTransient<ITagInspector, PicardTagInspector>();
                 x.AddSingleton<IPresenterFactory, PresenterFactory>();

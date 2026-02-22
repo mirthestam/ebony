@@ -1,5 +1,7 @@
 using Aria.Core;
 using Aria.Core.Connection;
+using Aria.Core.Library;
+using Aria.Core.Queue;
 using Aria.Features.Shell.Welcome;
 using Aria.Infrastructure;
 using CommunityToolkit.Mvvm.Messaging;
@@ -13,9 +15,11 @@ public partial class MainWindowPresenter : IRecipient<ShowToastMessage>
 {
     private readonly Application _application;
     private readonly ILogger<MainWindowPresenter> _logger;
+    private readonly IAria _aria;
     private readonly IAriaControl _ariaControl;
     private readonly MainPagePresenter _mainPagePresenter;
     private readonly WelcomePagePresenter _welcomePagePresenter;
+    private readonly ArtAssetLoader _artAssetLoader;
 
     public MainWindow View { get; private set; }
 
@@ -24,15 +28,18 @@ public partial class MainWindowPresenter : IRecipient<ShowToastMessage>
         WelcomePagePresenter welcomePagePresenter,
         ILogger<MainWindowPresenter> logger,
         Application application,
-        IAriaControl ariaControl)
+        IAria aria,
+        IAriaControl ariaControl, ArtAssetLoader artAssetLoader)
     {
         _application = application;
+        _aria = aria;
         _mainPagePresenter = mainPagePresenter;
         _welcomePagePresenter = welcomePagePresenter;
         _ariaControl = ariaControl;
+        _artAssetLoader = artAssetLoader;
         _logger = logger;
 
-        messenger.Register(this);
+        messenger.RegisterAll(this);
 
         _ariaControl.StateChanged += AriaControlOnStateChanged;
     }
@@ -107,4 +114,6 @@ public partial class MainWindowPresenter : IRecipient<ShowToastMessage>
 
     [LoggerMessage(LogLevel.Critical, "Failed to disconnect.")]
     partial void LogFailedToDisconnect(Exception e);
+
+    
 }

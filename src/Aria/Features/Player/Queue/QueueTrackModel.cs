@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Aria.Core.Extraction;
 using Aria.Core.Library;
 using Aria.Core.Player;
+using Aria.Infrastructure;
 using Gdk;
 using GObject;
 using Object = GObject.Object;
@@ -85,7 +86,7 @@ public partial class QueueTrackModel : INotifyPropertyChanged
         }        
     }
     
-    public Texture? CoverTexture
+    public Art? CoverArt
     {
         get;
         set

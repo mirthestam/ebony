@@ -5,18 +5,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aria.Infrastructure;
 
-public partial class ResourceTextureLoader(ILogger<ResourceTextureLoader> logger, ILibrary library)
+public partial class ArtAssetLoader(ILogger<ArtAssetLoader> logger, ILibrary library)
 {
-    public async Task<Texture?> LoadFromAlbumResourceAsync(Id resourceId, CancellationToken cancellationToken = default)
+    public async Task<Art?> LoadFromAssetAsync(Id assetId, CancellationToken cancellationToken = default)
     {
         using var pixelBufferLoader = GdkPixbuf.PixbufLoader.NewWithProperties([]);
         try
         {
-            await using var stream = await library.GetAlbumResourceStreamAsync(resourceId, cancellationToken)
+            await using var stream = await library.GetAlbumResourceStreamAsync(assetId, cancellationToken)
                 .ConfigureAwait(false);
             if (stream == Stream.Null)
             {
-                LogResourceNotFound(resourceId);
+                LogResourceNotFound(assetId);
                 return null;
             }
 
@@ -27,9 +27,18 @@ public partial class ResourceTextureLoader(ILogger<ResourceTextureLoader> logger
             pixelBufferLoader.Close();
 
             using var pixelBuffer = pixelBufferLoader.GetPixbuf();
-            if (pixelBuffer != null) return Texture.NewForPixbuf(pixelBuffer);
+            if (pixelBuffer != null)
+            {
+                var texture = Texture.NewForPixbuf(pixelBuffer);
+                var palette = PaletteExtractor.LoadPalette(pixelBuffer);
+                return new Art
+                {
+                    Paintable = texture,
+                    Palette = palette ?? []
+                };
+            }
 
-            LogCouldNotDecodeResource(resourceId);
+            LogCouldNotDecodeResource(assetId);
             return null;
 
         }
@@ -53,7 +62,7 @@ public partial class ResourceTextureLoader(ILogger<ResourceTextureLoader> logger
         {
             if (cancellationToken.IsCancellationRequested) return null;
             
-            LogExceptionLoadingResource(ex, resourceId);
+            LogExceptionLoadingResource(ex, assetId);
             try
             {
                 pixelBufferLoader.Close();
@@ -77,5 +86,5 @@ public partial class ResourceTextureLoader(ILogger<ResourceTextureLoader> logger
     partial void LogExceptionLoadingResource(Exception ex, Id resourceId);
 
     [LoggerMessage(LogLevel.Warning, "Failed to close pixbuf loader")]
-    static partial void LogFailedToClosePixbufLoader(ILogger<ResourceTextureLoader> logger, Exception e);
+    static partial void LogFailedToClosePixbufLoader(ILogger<ArtAssetLoader> logger, Exception e);
 }

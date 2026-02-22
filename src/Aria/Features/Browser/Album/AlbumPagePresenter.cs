@@ -17,10 +17,10 @@ public partial class AlbumPagePresenter(
     IMessenger messenger,
     IAria aria,
     IAriaControl ariaControl,
-    ResourceTextureLoader textureLoader) : IPresenter<AlbumPage>
+    ArtAssetLoader loader) : IPresenter<AlbumPage>
 {
     private AlbumInfo? _album;
-    private Texture? _currentCoverTexture;    
+    private Art? _currentCoverArt;    
     private CancellationTokenSource? _loadCts;
 
     public void Attach(AlbumPage view)
@@ -39,8 +39,8 @@ public partial class AlbumPagePresenter(
         {
             AbortLoading();
             
-            _currentCoverTexture?.Dispose();
-            _currentCoverTexture = null;            
+            _currentCoverArt?.Dispose();
+            _currentCoverArt = null;            
         }
         catch (Exception e)
         {
@@ -125,28 +125,28 @@ public partial class AlbumPagePresenter(
                 View?.LoadAlbum(album, filteredArtist);
             }, ct);                        
             
-            _currentCoverTexture?.Dispose();
-            _currentCoverTexture = null;            
+            _currentCoverArt?.Dispose();
+            _currentCoverArt = null;            
             
             var assetId = album.Assets.FrontCover?.Id ?? Id.Empty;
-            var newCoverTexture = await textureLoader.LoadFromAlbumResourceAsync(assetId, ct);
+            var newCoverArt = await loader.LoadFromAssetAsync(assetId, ct);
             ct.ThrowIfCancellationRequested();
             
-            if (newCoverTexture == null)
+            if (newCoverArt == null)
             {
                 LogCouldNotLoadAlbumCoverForAlbum(album.Id);
                 return;
             }
             
-            var previousCoverTexture = _currentCoverTexture;
-            _currentCoverTexture = newCoverTexture;            
+            var previousCoverArt = _currentCoverArt;
+            _currentCoverArt = newCoverArt;            
 
             await GtkDispatch.InvokeIdleAsync(() =>
             {
-                View?.SetCover(newCoverTexture);
+                View?.SetCoverArt(newCoverArt);
             }, ct);              
             
-            previousCoverTexture?.Dispose();
+            previousCoverArt?.Dispose();
         }
         catch (OperationCanceledException)
         {

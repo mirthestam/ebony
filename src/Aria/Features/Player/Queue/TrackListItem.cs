@@ -49,7 +49,7 @@ public partial class TrackListItem
 
     private void UpdateCoverPicture()
     {
-        _coverPicture.SetPaintable(Model?.CoverTexture);
+        _coverPicture.SetPaintable(Model?.CoverArt?.Paintable);
     }
 
     private void UpdatePlaying()
@@ -75,7 +75,7 @@ public partial class TrackListItem
             GtkDispatch.InvokeIdle(UpdatePlaying);
         }
 
-        if (e.PropertyName != nameof(QueueTrackModel.CoverTexture)) return;
+        if (e.PropertyName != nameof(QueueTrackModel.CoverArt)) return;
         GtkDispatch.InvokeIdle(UpdateCoverPicture);
     }
 }

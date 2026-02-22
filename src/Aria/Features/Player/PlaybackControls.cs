@@ -1,6 +1,7 @@
 using Aria.Core.Library;
 using Aria.Core.Player;
 using Aria.Features.Player.Queue;
+using Aria.Infrastructure;
 using Gdk;
 using GObject;
 using Gtk;
@@ -187,8 +188,8 @@ public partial class PlaybackControls
         _volumeButton.SetValue(playerVolume?? 0);
     }
 
-    public void SetCover(Texture? texture)
+    public void SetCoverArt(Art? art)
     {
-        _trackListItem.Model?.CoverTexture = texture;
+        _trackListItem.Model?.CoverArt = art;
     }
 }

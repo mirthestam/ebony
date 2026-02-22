@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Aria.Core.Extraction;
 using Aria.Core.Library;
+using Aria.Infrastructure;
 using Gdk;
 using GObject;
 using Object = GObject.Object;
@@ -35,7 +36,7 @@ public partial class AlbumModel : INotifyPropertyChanged
     
     public DateTime? ReleaseDate { get; private set; }
     
-    public Texture? CoverTexture
+    public Art? CoverArt
     {
         get;
         set

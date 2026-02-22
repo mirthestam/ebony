@@ -5,7 +5,6 @@ using Aria.Features.Browser.Shared;
 using Aria.Infrastructure;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
-using ResourceTextureLoader = Aria.Infrastructure.ResourceTextureLoader;
 
 namespace Aria.Features.Browser.Albums;
 
@@ -13,16 +12,16 @@ public partial class AlbumsPagePresenter : IRecipient<LibraryUpdatedMessage>
 {
     private readonly ILogger<AlbumsPagePresenter> _logger;
     private readonly IAria _aria;
-    private readonly ResourceTextureLoader _textureLoader;
+    private readonly ArtAssetLoader _loader;
 
     private CancellationTokenSource? _loadCts;
 
     public AlbumsPagePresenter(ILogger<AlbumsPagePresenter> logger, IMessenger messenger, IAria aria,
-        ResourceTextureLoader textureLoader)
+        ArtAssetLoader loader)
     {
         _aria = aria;
         _logger = logger;
-        _textureLoader = textureLoader;
+        _loader = loader;
 
         messenger.RegisterAll(this);
     }
@@ -134,7 +133,7 @@ public partial class AlbumsPagePresenter : IRecipient<LibraryUpdatedMessage>
 
         try
         {
-            model.CoverTexture = await _textureLoader.LoadFromAlbumResourceAsync(artId, ct);
+            model.CoverArt = await _loader.LoadFromAssetAsync(artId, ct);
         }
         catch (OperationCanceledException)
         {

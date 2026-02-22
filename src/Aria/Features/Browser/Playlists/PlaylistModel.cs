@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Aria.Core.Extraction;
 using Aria.Core.Library;
+using Aria.Infrastructure;
 using Gdk;
 using GObject;
 using Object = GObject.Object;
@@ -51,7 +52,7 @@ public partial class PlaylistModel : INotifyPropertyChanged
 
     public string Credits { get; private set; }
     
-    public Texture? CoverTexture
+    public Art? CoverArt
     {
         get;
         set

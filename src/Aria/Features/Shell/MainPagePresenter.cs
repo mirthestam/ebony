@@ -1,5 +1,7 @@
 using Aria.Core;
 using Aria.Core.Connection;
+using Aria.Core.Library;
+using Aria.Core.Queue;
 using Aria.Features.Browser;
 using Aria.Features.Player;
 using Aria.Features.PlayerBar;
@@ -10,13 +12,15 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Aria.Features.Shell;
 
-public partial class MainPagePresenter : IRootPresenter<MainPage>
+public partial class MainPagePresenter : IRootPresenter<MainPage>, IRecipient<QueueStateChangedMessage>
 {
     private readonly ILogger<MainPagePresenter> _logger;
     private readonly IAriaControl _ariaControl;
+    private readonly IAria _aria;
     private readonly BrowserHostPresenter _browserHostPresenter;
     private readonly PlayerPresenter _playerPresenter;
     private readonly PlayerBarPresenter _playerBarPresenter;
+    private readonly ArtAssetLoader _artAssetLoader;
     
     private CancellationTokenSource? _connectionCancellationTokenSource;
     
@@ -26,15 +30,17 @@ public partial class MainPagePresenter : IRootPresenter<MainPage>
         BrowserHostPresenter browserHostPresenter,
         PlayerPresenter playerPresenter,
         PlayerBarPresenter playerBarPresenter,
-        IMessenger messenger, IAriaControl ariaControl)
+        IMessenger messenger, IAriaControl ariaControl, IAria aria, ArtAssetLoader artAssetLoader)
     {
         _logger = logger;
         _browserHostPresenter = browserHostPresenter;
         _playerPresenter = playerPresenter;
         _playerBarPresenter = playerBarPresenter;
         _ariaControl = ariaControl;
-        
-        
+        _aria = aria;
+        _artAssetLoader = artAssetLoader;
+
+
         _ariaControl.StateChanged += AriaControlOnStateChanged;
         
         messenger.RegisterAll(this);
@@ -47,6 +53,31 @@ public partial class MainPagePresenter : IRootPresenter<MainPage>
         _playerBarPresenter.Attach(view.PlayerBar);
         _playerPresenter.Attach(view.Player, context);
     }
+    
+    public async void Receive(QueueStateChangedMessage message)
+    {
+        try
+        {
+            if (!message.Value.HasFlag(QueueStateChangedFlags.PlaybackOrder)) return;
+            
+            // The current track has changed.
+            var track = _aria.Queue.CurrentTrack;
+            var assetId = track?.Track.Assets.FrontCover?.Id;
+            if (assetId == null)
+            {
+                View?.Colorize(null);
+            }
+            else
+            {
+                var art = await _artAssetLoader.LoadFromAssetAsync(assetId);
+                View?.Colorize(art);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }    
     
     public MainPage? View { get; private set; }
     

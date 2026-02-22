@@ -1,5 +1,6 @@
 using Adw;
 using Aria.Features.Shell.Welcome;
+using Aria.Infrastructure;
 using GObject;
 using Gtk;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ public partial class MainWindow
     private const string MainPageName = "main-stack-page";
     private const string WelcomePageName = "welcome-stack-page";
     private const string ConnectingPageName = "connecting-stack-page";
-
+    
     [Connect("main-stack")] private Stack _mainStack;
     [Connect("welcome-page")] private WelcomePage _welcomePage;
     [Connect("connecting-page")] private ConnectingPage _connectingPage;
@@ -65,7 +66,9 @@ public partial class MainWindow
                 window.LogFailedToStartUp(ex);
             }
         };
+        
 
+        
         return window;
     }
     
@@ -74,7 +77,7 @@ public partial class MainWindow
     public ConnectingPage ConnectingPage => _connectingPage;
 
     public MainPage MainPage => _mainPage;
-
+    
     partial void Initialize()
     {
         ConfigureBreakpoints();

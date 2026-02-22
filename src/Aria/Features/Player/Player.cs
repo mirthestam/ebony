@@ -55,16 +55,16 @@ public partial class Player
         return SeekRequested?.Invoke(position, cancellationToken) ?? Task.CompletedTask;
     }
     
-    public void LoadCover(Texture texture)
+    public void LoadCoverArt(Art art)
     {
-        _playbackControls.SetCover(texture);
+        _playbackControls.SetCoverArt(art);
         _coverPicture.Visible = true;
-        _coverPicture.SetPaintable(texture);
+        _coverPicture.SetPaintable(art.Paintable);
     }
 
-    public void ClearCover()
+    public void ClearCoverArt()
     {
-        _playbackControls.SetCover(null);        
+        _playbackControls.SetCoverArt(null);        
         _coverPicture.Visible = false;
         _coverPicture.SetPaintable(null);
     }

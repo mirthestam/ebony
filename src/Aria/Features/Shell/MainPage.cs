@@ -1,6 +1,7 @@
 using Adw;
 using Aria.Core;
 using Aria.Features.Browser;
+using Aria.Infrastructure;
 using Gio;
 using GObject;
 using Gtk;
@@ -30,8 +31,54 @@ public partial class MainPage
         var otherLayout = currentLayout == _sidebarLayout ? _bottomSheetLayout : _sidebarLayout;
         _multiLayoutView.SetLayout(otherLayout);
         _multiLayoutView.SetLayout(currentLayout);        
+        
+        _cssProvider = CssProvider.New();
+        var display = Gdk.Display.GetDefault();
+        if (display != null)
+        {
+            StyleContext.AddProviderForDisplay(display, _cssProvider, 400);
+        }        
     }
 
+    private CssProvider _cssProvider;    
+    
+    public void Colorize(Art? art)
+    {
+        const string colorized = "colorized-main-window";
+        if (art == null || art.Palette.Length == 0)
+        {
+            _cssProvider.LoadFromString(string.Empty);
+            if (HasCssClass(colorized)) RemoveCssClass(colorized);
+            return;
+        }
+        
+        var css = new System.Text.StringBuilder();
+        css.Append(":root {");
+
+        var colorCount = art.Palette.Length;
+        for (var i = 0; i < colorCount; i++)
+        {
+            var color = art.Palette[i];
+            var r = (int)(color.Red * 255);
+            var g = (int)(color.Green * 255);
+            var b = (int)(color.Blue * 255);
+            var a = color.Alpha;
+
+            css.Append($"--background-color-{i}: rgba({r}, {g}, {b}, {a});");
+        }
+        
+        // Fill the remaining required colors
+        for (var i = colorCount; i < 5; i++)
+        {
+            css.Append($"--background-color-{i}: var(--window-bg-color);");
+        }
+
+        css.Append('}');
+        _cssProvider.LoadFromString(css.ToString());
+            
+        if (!HasCssClass(colorized)) AddCssClass(colorized);
+    }
+    
     public const string BottomSheetLayoutName = "bottom-sheet-layout";
     public const string SidebarLayoutName = "sidebar-layout";
     

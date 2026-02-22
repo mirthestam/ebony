@@ -58,23 +58,23 @@ public partial class PlaylistNameCell
     
     private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(PlaylistModel.CoverTexture)) return;            
+        if (e.PropertyName != nameof(PlaylistModel.CoverArt)) return;            
         
         GtkDispatch.InvokeIdle(UpdateCoverPicture);
     }
 
     private void UpdateCoverPicture()
     {
-        _coverPicture.SetPaintable(Model?.CoverTexture);
+        _coverPicture.SetPaintable(Model?.CoverArt?.Paintable);
     }    
     
     private static void DragOnOnDragBegin(DragSource sender, DragSource.DragBeginSignalArgs args)
     {
         var widget = (PlaylistNameCell)sender.GetWidget()!;
-        var cover = widget.Model!.CoverTexture;
+        var cover = widget.Model!.CoverArt;
         if (cover == null) return;
 
-        var coverPicture = Picture.NewForPaintable(cover);
+        var coverPicture = Picture.NewForPaintable(cover.Paintable);
         coverPicture.AddCssClass("cover");
         coverPicture.CanShrink = true;
         coverPicture.ContentFit = ContentFit.ScaleDown;
