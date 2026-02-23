@@ -5,7 +5,7 @@ using Box = Gtk.Box;
 namespace Aria.Features.Browser;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.BrowserHost.ui")]
+[Template<AssemblyResource>($"ui/{nameof(BrowserHost)}.ui")]
 public partial class BrowserHost
 {
     public enum BrowserState

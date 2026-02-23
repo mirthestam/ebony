@@ -8,7 +8,7 @@ using Gtk;
 namespace Aria.Features.Browser.Album;
 
 [Subclass<NavigationPage>]
-[Template<AssemblyResource>("Aria.Features.Browser.Album.AlbumPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(AlbumPage)}.ui")]
 public partial class AlbumPage
 {
     private AlbumInfo _album;

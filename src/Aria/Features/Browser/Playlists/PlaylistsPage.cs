@@ -10,7 +10,7 @@ using ListStore = Gio.ListStore;
 namespace Aria.Features.Browser.Playlists;
 
 [Subclass<NavigationPage>]
-[Template<AssemblyResource>("Aria.Features.Browser.Playlists.PlaylistsPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(PlaylistsPage)}.ui")]
 public partial class PlaylistsPage
 {
     public enum PlaylistsPages

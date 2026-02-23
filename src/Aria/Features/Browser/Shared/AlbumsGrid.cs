@@ -8,7 +8,7 @@ using ListStore = Gio.ListStore;
 namespace Aria.Features.Browser.Shared;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Shared.AlbumsGrid.ui")]
+[Template<AssemblyResource>($"ui/{nameof(AlbumsGrid)}.ui")]
 public partial class AlbumsGrid
 {
     // TODO: Context Menu

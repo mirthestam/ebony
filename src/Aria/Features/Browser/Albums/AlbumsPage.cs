@@ -9,7 +9,7 @@ using Gtk;
 namespace Aria.Features.Browser.Albums;
 
 [Subclass<NavigationPage>]
-[Template<AssemblyResource>("Aria.Features.Browser.Albums.AlbumsPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(AlbumsPage)}.ui")]
 public partial class AlbumsPage
 {
     [Connect("albums-grid-view")] private AlbumsGrid _gridView;

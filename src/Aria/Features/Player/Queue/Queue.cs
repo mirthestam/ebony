@@ -7,7 +7,7 @@ using ListStore = Gio.ListStore;
 namespace Aria.Features.Player.Queue;
 
 [Subclass<Stack>]
-[Template<AssemblyResource>("Aria.Features.Player.Queue.Queue.ui")]
+[Template<AssemblyResource>($"ui/{nameof(Queue)}.ui")]
 public partial class Queue
 {
     public enum QueuePages

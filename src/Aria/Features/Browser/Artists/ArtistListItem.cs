@@ -4,7 +4,7 @@ using Gtk;
 namespace Aria.Features.Browser.Artists;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Artists.ArtistListItem.ui")]
+[Template<AssemblyResource>($"ui/{nameof(ArtistListItem)}.ui")]
 public partial class ArtistListItem
 {
     [Connect("name-label")] private Label _nameLabel;

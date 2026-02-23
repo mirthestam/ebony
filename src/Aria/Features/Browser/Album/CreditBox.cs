@@ -9,7 +9,7 @@ using Gtk;
 namespace Aria.Features.Browser.Album;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Album.CreditBox.ui")]
+[Template<AssemblyResource>($"ui/{nameof(CreditBox)}.ui")]
 public partial class CreditBox
 {
     [Connect("main-box")] private Box _featuringBox;

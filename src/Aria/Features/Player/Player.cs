@@ -11,7 +11,7 @@ namespace Aria.Features.Player;
 public delegate Task SeekRequestedAsyncHandler(TimeSpan position, CancellationToken cancellationToken);
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Player.Player.ui")]
+[Template<AssemblyResource>($"ui/{nameof(Player)}.ui")]
 public partial class Player
 {
     [Connect("album-picture")] private Picture _coverPicture;

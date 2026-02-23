@@ -11,7 +11,7 @@ using Gtk;
 namespace Aria.Features.Browser;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.BrowserPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(BrowserPage)}.ui")]
 public partial class BrowserPage
 {
     private const string SearchPageName = "search-nav-page";

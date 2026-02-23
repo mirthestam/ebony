@@ -9,7 +9,7 @@ using Gtk;
 namespace Aria.Features.Browser.Search;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Search.SearchPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(SearchPage)}.ui")]
 public partial class SearchPage
 {
     private const string ResultsStackPageName = "results-stack-page";

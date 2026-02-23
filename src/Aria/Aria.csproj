@@ -15,37 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Features\Browser\Albums\AlbumsPage.ui" />
-        <EmbeddedResource Include="Features\Browser\Album\AlbumPage.ui"/>
-        <EmbeddedResource Include="Features\Browser\Album\CreditBox.ui" />
-        <EmbeddedResource Include="Features\Browser\Album\TrackGroup.ui" />
-        <EmbeddedResource Include="Features\Browser\Artists\ArtistListItem.ui"/>
-        <EmbeddedResource Include="Features\Browser\Artists\ArtistsPage.ui"/>
-        <EmbeddedResource Include="Features\Browser\Artist\ArtistPage.ui"/>
-        <EmbeddedResource Include="Features\Browser\Artist\EmptyPage.ui"/>
-        <EmbeddedResource Include="Features\Browser\BrowserHost.ui" />
-        <EmbeddedResource Include="Features\Browser\BrowserEmptyPage.ui" />
-        <EmbeddedResource Include="Features\Browser\BrowserPage.ui" />
-        <EmbeddedResource Include="Features\Browser\Playlists\PlaylistNameCell.ui" />
-        <EmbeddedResource Include="Features\Browser\Playlists\PlaylistsEmptyPage.ui" />
-        <EmbeddedResource Include="Features\Browser\Playlists\PlaylistsPage.ui" />
-        <EmbeddedResource Include="Features\Browser\Playlists\RenamePlaylistDialog.ui" />
-        <EmbeddedResource Include="Features\Browser\Search\SearchPage.ui" />
-        <EmbeddedResource Include="Features\Browser\Shared\AlbumListItem.ui" />
-        <EmbeddedResource Include="Features\Browser\Shared\AlbumsGrid.ui" />
-        <EmbeddedResource Include="Features\Details\TrackDetailsDialog.ui" />
-        <EmbeddedResource Include="Features\PlayerBar\PlayerBar.ui"/>
-        <EmbeddedResource Include="Features\Player\PlaybackControls.ui"/>
-        <EmbeddedResource Include="Features\Player\Player.ui"/>
-        <EmbeddedResource Include="Features\Player\MediaControls.ui"/>
-        <EmbeddedResource Include="Features\Player\Queue\SaveQueueDialog.ui" />
-        <EmbeddedResource Include="Features\Player\Queue\TrackListItem.ui" />
-        <EmbeddedResource Include="Features\Player\Queue\Queue.ui" />
-        <EmbeddedResource Include="Features\Shell\ConnectingPage.ui" />
-        <EmbeddedResource Include="Features\Shell\MainPage.ui" />
-        <EmbeddedResource Include="Features\Shell\MainWindow.ui" />
-        <EmbeddedResource Include="Features\Shell\Welcome\ConnectionListItem.ui" />
-        <EmbeddedResource Include="Features\Shell\Welcome\WelcomePage.ui" />
         <EmbeddedResource Include="Resources\vinyl-record.png" />
     </ItemGroup>
 
@@ -60,5 +29,24 @@
         <HintPath>..\..\..\..\..\.nuget\packages\mpcnet\1.6.6\lib\netstandard2.0\MpcNET.dll</HintPath>
       </Reference>
     </ItemGroup>
-    
+
+    <ItemGroup>
+        <BlueprintFiles Include="Features\**\*.blp" />
+    </ItemGroup>
+
+    <!-- Target om .BLP -> .XML te compileren -->
+    <Target Name="CompileBlueprints"
+            BeforeTargets="BeforeBuild"
+            Inputs="@(BlueprintFiles)"
+            Outputs="@(BlueprintFiles->'$(IntermediateOutputPath)%(Filename).ui')">
+        <Exec Command='blueprint-compiler compile --output "$(IntermediateOutputPath)%(BlueprintFiles.Filename).ui" "%(BlueprintFiles.FullPath)"' />
+    </Target>
+
+    <!-- Add XML (compiled blueprint) files as embedded resources -->
+    <ItemGroup>
+        <EmbeddedResource Include="$(IntermediateOutputPath)**\*.ui">
+            <LogicalName>ui\%(Filename).ui</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

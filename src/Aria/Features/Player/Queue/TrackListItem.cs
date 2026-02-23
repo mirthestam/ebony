@@ -7,7 +7,7 @@ using Gtk;
 namespace Aria.Features.Player.Queue;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Player.Queue.TrackListItem.ui")]
+[Template<AssemblyResource>($"ui/{nameof(TrackListItem)}.ui")]
 public partial class TrackListItem
 {
     [Connect("cover-picture")] private Picture _coverPicture;

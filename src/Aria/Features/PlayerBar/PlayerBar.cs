@@ -9,7 +9,7 @@ using Gtk;
 namespace Aria.Features.PlayerBar;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.PlayerBar.PlayerBar.ui")]
+[Template<AssemblyResource>($"ui/{nameof(PlayerBar)}.ui")]
 public partial class PlayerBar
 {
     [Connect("cover-picture")] private Picture _coverPicture;

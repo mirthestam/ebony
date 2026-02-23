@@ -11,7 +11,7 @@ using ApplicationWindow = Adw.ApplicationWindow;
 namespace Aria.Features.Shell;
 
 [Subclass<ApplicationWindow>]
-[Template<AssemblyResource>("Aria.Features.Shell.MainWindow.ui")]
+[Template<AssemblyResource>($"ui/{nameof(MainWindow)}.ui")]
 public partial class MainWindow
 {
     public enum MainPages

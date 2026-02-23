@@ -8,7 +8,7 @@ using Gtk;
 namespace Aria.Features.Details;
 
 [Subclass<PreferencesDialog>]
-[Template<AssemblyResource>("Aria.Features.Details.TrackDetailsDialog.ui")]
+[Template<AssemblyResource>($"ui/{nameof(TrackDetailsDialog)}.ui")]
 public partial class TrackDetailsDialog
 {
     [Connect("artists-group")] private PreferencesGroup _artistsPreferencesGroup;

@@ -7,7 +7,7 @@ using Gtk;
 namespace Aria.Features.Browser.Playlists;
 
 [Subclass<Adw.Dialog>]
-[Template<AssemblyResource>("Aria.Features.Browser.Playlists.RenamePlaylistDialog.ui")]
+[Template<AssemblyResource>($"ui/{nameof(RenamePlaylistDialog)}.ui")]
 public partial class RenamePlaylistDialog
 {
     [Connect("entry")] private Entry _entry;

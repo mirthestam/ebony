@@ -7,7 +7,7 @@ using Gtk;
 namespace Aria.Features.Browser.Album;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Album.TrackGroup.ui")]
+[Template<AssemblyResource>($"ui/{nameof(TrackGroup)}.ui")]
 public partial class TrackGroup
 {
     [Connect("tracks-listbox")] private ListBox _tracksListBox;

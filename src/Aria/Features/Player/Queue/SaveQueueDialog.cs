@@ -6,7 +6,7 @@ using Gtk;
 namespace Aria.Features.Player.Queue;
 
 [Subclass<Adw.Dialog>]
-[Template<AssemblyResource>("Aria.Features.Player.Queue.SaveQueueDialog.ui")]
+[Template<AssemblyResource>($"ui/{nameof(SaveQueueDialog)}.ui")]
 public partial class SaveQueueDialog
 {
     [Connect("entry")] private Entry _entry;

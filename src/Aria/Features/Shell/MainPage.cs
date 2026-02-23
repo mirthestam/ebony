@@ -10,7 +10,7 @@ namespace Aria.Features.Shell;
 
 #pragma warning disable CS0649
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Shell.MainPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(MainPage)}.ui")]
 public partial class MainPage
 {
     [Connect("player-bar")] private PlayerBar.PlayerBar _playerBar;

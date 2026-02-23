@@ -11,7 +11,7 @@ using Button = Gtk.Button;
 namespace Aria.Features.Shell.Welcome;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Shell.Welcome.WelcomePage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(WelcomePage)}.ui")]
 public partial class WelcomePage
 {
     private readonly List<PreferencesRow> _visibleRows = [];

@@ -8,7 +8,7 @@ using Gtk;
 namespace Aria.Features.Browser.Playlists;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Playlists.PlaylistNameCell.ui")]
+[Template<AssemblyResource>($"ui/{nameof(PlaylistNameCell)}.ui")]
 public partial class PlaylistNameCell
 {
     [Connect("title-label")] private Label _titleLabel;

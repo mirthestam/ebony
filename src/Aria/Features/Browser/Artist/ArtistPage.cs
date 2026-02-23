@@ -10,7 +10,7 @@ using Gtk;
 namespace Aria.Features.Browser.Artist;
 
 [Subclass<NavigationPage>]
-[Template<AssemblyResource>("Aria.Features.Browser.Artist.ArtistPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(ArtistPage)}.ui")]
 public partial class ArtistPage
 {
     public enum ArtistPages

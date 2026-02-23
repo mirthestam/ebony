@@ -11,7 +11,7 @@ using Range = Gtk.Range;
 namespace Aria.Features.Player;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Player.PlaybackControls.ui")]
+[Template<AssemblyResource>($"ui/{nameof(PlaybackControls)}.ui")]
 public partial class PlaybackControls
 {
     [Connect("elapsed-scale")] private Scale _elapsedScale;

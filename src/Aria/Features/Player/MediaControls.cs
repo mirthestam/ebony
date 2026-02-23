@@ -6,7 +6,7 @@ using Gtk;
 namespace Aria.Features.Player;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Player.MediaControls.ui")]
+[Template<AssemblyResource>($"ui/{nameof(MediaControls)}.ui")]
 public partial class MediaControls
 {
     [Connect("playback-start-button")] private PlayButton _playbackStartButton;

@@ -4,5 +4,5 @@ using Gtk;
 namespace Aria.Features.Browser.Playlists;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Playlists.PlaylistsEmptyPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(PlaylistsEmptyPage)}.ui")]
 public partial class PlaylistsEmptyPage;

@@ -5,7 +5,7 @@ using Gtk;
 namespace Aria.Features.Shell.Welcome;
 
 [Subclass<ActionRow>]
-[Template<AssemblyResource>("Aria.Features.Shell.Welcome.ConnectionListItem.ui")]
+[Template<AssemblyResource>($"ui/{nameof(ConnectionListItem)}.ui")]
 public partial class ConnectionListItem
 {
     [Connect("title-label")] private Label _titleLabel;

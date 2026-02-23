@@ -12,7 +12,7 @@ using Object = GObject.Object;
 namespace Aria.Features.Browser.Artists;
 
 [Subclass<NavigationPage>]
-[Template<AssemblyResource>("Aria.Features.Browser.Artists.ArtistsPage.ui")]
+[Template<AssemblyResource>($"ui/{nameof(ArtistsPage)}.ui")]
 public partial class ArtistsPage
 {
     [Connect("artists-list-view")] private ListView _artistsListView;

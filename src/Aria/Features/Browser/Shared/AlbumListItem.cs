@@ -8,7 +8,7 @@ using Gtk;
 namespace Aria.Features.Browser.Shared;
 
 [Subclass<Box>]
-[Template<AssemblyResource>("Aria.Features.Browser.Shared.AlbumListItem.ui")]
+[Template<AssemblyResource>($"ui/{nameof(AlbumListItem)}.ui")]
 public partial class AlbumListItem
 {
     [Connect("cover-picture")] private Picture _coverPicture;
