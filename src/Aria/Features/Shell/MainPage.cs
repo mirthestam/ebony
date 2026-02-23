@@ -44,11 +44,11 @@ public partial class MainPage
     
     public void Colorize(Art? art)
     {
-        const string colorized = "colorized-main-window";
+        const string cssClass = "colorized-main-page";
         if (art == null || art.Palette.Length == 0)
         {
             _cssProvider.LoadFromString(string.Empty);
-            if (HasCssClass(colorized)) RemoveCssClass(colorized);
+            if (HasCssClass(cssClass)) RemoveCssClass(cssClass);
             return;
         }
         
@@ -76,7 +76,7 @@ public partial class MainPage
         css.Append('}');
         _cssProvider.LoadFromString(css.ToString());
             
-        if (!HasCssClass(colorized)) AddCssClass(colorized);
+        if (!HasCssClass(cssClass)) AddCssClass(cssClass);
     }
     
     public const string BottomSheetLayoutName = "bottom-sheet-layout";

@@ -47,9 +47,15 @@
         <PackageReference Include="Zeroconf" Version="3.7.16" />
     </ItemGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-        <Exec Command="glib-compile-resources --sourcedir ./Resources ./Resources/nl.mirthestam.aria.gresource.xml --target=$(OutDir)/nl.mirthestam.aria.gresource" />
-    </Target>
+    <ItemGroup>
+        <GResourceFiles Include="Resources/**/*.*" />
+    </ItemGroup>
     
+    <Target Name="CompileGResource"
+            BeforeTargets="Build"
+            Inputs="@(GResourceFiles)"
+            Outputs="$(OutDir)/nl.mirthestam.aria.gresource">
+        <Exec Command="glib-compile-resources --sourcedir ./Resources ./Resources/nl.mirthestam.aria.gresource.xml --target=$(OutDir)/nl.mirthestam.aria.gresource" />
+    </Target>    
 
 </Project>

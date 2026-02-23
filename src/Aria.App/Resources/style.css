@@ -20,26 +20,9 @@
     font-weight: normal;
 }
 
-.colorized-main-window {
-    
-    /* Accent */
+.colorized-main-page {
+
     --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
-    --scrollbar-outline-color: rgb(255 255 255 / 25%);
-    
-    /* The sidebar (in this case the queue) needs to be transparent, to let the background colors through*/
-    --sidebar-bg-color: rgb(0 0 0 / 6%);
-    --sidebar-backdrop-color: rgb(0 0 0 / 3%);
-    --sidebar-shade-color: rgb(0 0 0 / 10%);
-    --sidebar-border-color: rgb(0 0 0 / 10%);
-
-    --secondary-sidebar-bg-color: rgb(0 0 0 / 6%);
-    --secondary-sidebar-backdrop-color: rgb(0 0 0 / 3%);
-    --secondary-sidebar-shade-color: rgb(0 0 0 / 10%);
-    --secondary-sidebar-border-color: rgb(0 0 0 / 10%);    
-
-    /* The usage of Accent colors need to be set to black/white instead of the default accent colors, to not conflict with the background*/
-    --accent-bg-color: rgb(0 0 0 / 75%);
-    --accent-fg-color: white;
 
     /* Set the background to the gradient*/
     background: linear-gradient(127deg, color-mix(in srgb, var(--background-color-0) 55%, transparent), color-mix(in srgb, var(--background-color-0) 0%, transparent) 70.71%),
@@ -48,12 +31,35 @@
     transition-property: background;
     transition-duration: 250ms;
     transition-timing-function: ease;
+
+    /* TODO: Playlist in mobile mode */
+    /* TODO: Playlists columns view */
 }
 
+@media (prefers-color-scheme: light) {
+    .colorized-main-page {
+        --sidebar-bg-color: rgb(0 0 0 / 6%);
+        --sidebar-backdrop-color: rgb(0 0 0 / 3%);
+        --sidebar-shade-color: rgb(0 0 0 / 10%);
+        --sidebar-border-color: rgb(0 0 0 / 10%);
 
+        --secondary-sidebar-bg-color: rgb(0 0 0 / 6%);
+        --secondary-sidebar-backdrop-color: rgb(0 0 0 / 3%);
+        --secondary-sidebar-shade-color: rgb(0 0 0 / 10%);
+        --secondary-sidebar-border-color: rgb(0 0 0 / 10%);
+
+        --accent-bg-color: rgb(0 0 0 / 75%);
+        --accent-fg-color: white;
+        --scrollbar-outline-color: rgb(255 255 255 / 25%);
+    }
+
+    .colorized-main-page list.boxed-list {
+        background-color: rgb(0 0 0 / 3%);
+    }
+}
 
 @media (prefers-color-scheme: dark) {
-    .colorized-main-window {
+    .colorized-main-page {
         --sidebar-bg-color: rgb(255 255 255 / 5.5%);
         --sidebar-backdrop-color: rgb(255 255 255 / 2.75%);
         --sidebar-shade-color: rgb(0 0 0 / 20%);
@@ -63,7 +69,7 @@
         --secondary-sidebar-backdrop-color: rgb(255 255 255 / 2.75%);
         --secondary-sidebar-shade-color: rgb(0 0 0 / 20%);
         --secondary-sidebar-border-color: rgb(0 0 0 / 28%);
-        
+
         --accent-bg-color: rgb(255 255 255 / 75%);
         --accent-fg-color: rgb(0 0 0 / 75%);
         --scrollbar-outline-color: rgb(0 0 0 / 25%);
