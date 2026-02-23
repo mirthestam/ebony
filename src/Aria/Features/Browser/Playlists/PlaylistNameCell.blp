@@ -1,0 +1,61 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserPlaylistsPlaylistNameCell: Box {
+  DragSource drag-source {
+    actions: copy;
+  }
+
+  GestureLongPress gesture-long-press {
+    touch-only: true;
+  }
+
+  GestureClick gesture-click {
+    button: 0;
+  }
+
+  Box {
+    hexpand: true;
+    orientation: horizontal;
+    spacing: 6;
+
+    Adw.Clamp {
+      maximum-size: 48;
+      valign: center;
+      visible: true;
+
+      Picture cover-picture {
+        css-classes: [
+          "cover",
+        ];
+
+        height-request: 48;
+        width-request: 48;
+      }
+    }
+
+    Box info-box {
+      hexpand: true;
+      orientation: vertical;
+      valign: center;
+
+      Label title-label {
+        ellipsize: end;
+        margin-top: 3;
+        single-line-mode: true;
+        xalign: 0;
+      }
+
+      Label subtitle-label {
+        css-classes: [
+          "dimmed",
+          "caption",
+        ];
+
+        ellipsize: end;
+        single-line-mode: true;
+        xalign: 0;
+      }
+    }
+  }
+}

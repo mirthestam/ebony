@@ -10,6 +10,9 @@ export SRC_RESOURCES="${SRC_APP}"/Resources
 # Prepare the directory
 mkdir -p "${FLATPAK_DEST}"/bin/
 
+# Check if blueprint-compiler is available
+which blueprint-compiler || echo "WARNING: blueprint-compiler not found in PATH"
+
 # Copy resources
 install -Dm644 "${SRC_RESOURCES}"/"${FLATPAK_ID}".desktop -t /app/share/applications
 install -Dm644 "${SRC_RESOURCES}"/"${FLATPAK_ID}".metainfo.xml -t /app/share/metainfo

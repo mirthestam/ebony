@@ -1,0 +1,41 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserBrowserEmptyPage: Box {
+  Adw.ToolbarView {
+    content: Adw.StatusPage {
+      description: "Add music to your player. Your player’s library will show up here.";
+      icon-name: "folder-music-symbolic";
+      title: "Library is empty";
+    };
+
+    hexpand: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+
+      [end]
+      MenuButton {
+        icon-name: "open-menu-symbolic";
+        menu-model: main-menu;
+      }
+    }
+  }
+}
+
+menu main-menu {
+  section artists-section {
+    item {
+      action: "win.disconnect";
+      label: "_Disconnect";
+    }
+  }
+
+  section main-section {
+    item {
+      action: "win.about";
+      label: "_About Aria";
+    }
+  }
+}

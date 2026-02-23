@@ -1,0 +1,25 @@
+using Gtk 4.0;
+
+template $AriaFeaturesPlayerMediaControls: Box {
+  halign: center;
+  hexpand: false;
+  spacing: 6;
+  vexpand: true;
+
+  Button skip-backward-button {
+    action-name: "aria-player.previous";
+    icon-name: "media-skip-backward-symbolic";
+    tooltip-text: "Previous track";
+  }
+
+  $AriaFeaturesSharedPlayButton playback-start-button {
+    action-name: "aria-player.play-pause";
+    icon-name: "media-playback-start-symbolic";
+  }
+
+  Button skip-forward-button {
+    action-name: "aria-player.next";
+    icon-name: "media-skip-forward-symbolic";
+    tooltip-text: "Next track";
+  }
+}

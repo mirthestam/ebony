@@ -1,0 +1,54 @@
+using Gtk 4.0;
+
+template $AriaFeaturesBrowserSharedAlbumListItem: Box {
+  halign: center;
+  orientation: horizontal;
+  spacing: 0;
+
+  DragSource drag-source {
+    actions: copy;
+  }
+
+  GestureLongPress gesture-long-press {
+    touch-only: true;
+  }
+
+  GestureClick gesture-click {
+    button: 0;
+  }
+
+  Box {
+    hexpand: false;
+    orientation: vertical;
+    spacing: 3;
+
+    Picture cover-picture {
+      content-fit: scale_down;
+
+      css-classes: [
+        "cover",
+      ];
+
+      halign: center;
+      height-request: 128;
+      keep-aspect-ratio: true;
+      width-request: 128;
+    }
+
+    Label title-label {
+      ellipsize: end;
+      margin-top: 3;
+      single-line-mode: false;
+    }
+
+    Label subtitle-label {
+      css-classes: [
+        "dimmed",
+        "caption",
+      ];
+
+      ellipsize: end;
+      single-line-mode: false;
+    }
+  }
+}

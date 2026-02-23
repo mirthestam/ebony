@@ -1,0 +1,146 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserAlbumAlbumPage: Adw.NavigationPage {
+  title: "Album";
+
+  Adw.ToolbarView {
+    content: Stack {
+      Box {
+        orientation: vertical;
+        vexpand: false;
+
+        ScrolledWindow {
+          child: Box {
+            margin-bottom: 24;
+            margin-end: 12;
+            margin-start: 12;
+            margin-top: 6;
+            orientation: vertical;
+
+            Adw.Clamp info-clamp {
+              child: Box {
+                margin-top: 6;
+                orientation: vertical;
+                spacing: 1;
+                vexpand: false;
+
+                Adw.Clamp cover-clamp {
+                  halign: center;
+                  margin-bottom: 6;
+                  maximum-size: 200;
+
+                  Picture cover-picture {
+                    alternative-text: "Album cover";
+                    content-fit: scale_down;
+
+                    css-classes: [
+                      "cover",
+                    ];
+
+                    halign: start;
+                    height-request: 180;
+                    hexpand: false;
+                    keep-aspect-ratio: true;
+                    width-request: 180;
+                  }
+                }
+
+                Box {
+                  orientation: horizontal;
+
+                  Label title-label {
+                    css-classes: [
+                      "title-3",
+                    ];
+
+                    ellipsize: end;
+                    hexpand: true;
+                    lines: -1;
+                    natural-wrap-mode: word;
+                    single-line-mode: false;
+                    tooltip-text: bind title-label.label no-sync-create;
+                    wrap: true;
+                    xalign: 0;
+                  }
+
+                  Adw.SplitButton enqueue-split-button {
+                    action-name: "album.enqueue-default";
+
+                    css-classes: [
+                      "flat",
+                    ];
+
+                    halign: end;
+                    icon-name: "list-low-priority-symbolic";
+                    menu-model: group-menu;
+                    valign: start;
+                  }
+                }
+
+                ListBox message-listbox {
+                  css-classes: [
+                    "boxed-list",
+                  ];
+
+                  margin-bottom: 9;
+                  margin-end: 0;
+                  margin-top: 9;
+                  selection-mode: none;
+                  visible: false;
+
+                  Adw.ActionRow filter-message-row {
+                    action-name: "album.full";
+                    activatable: true;
+                    icon-name: "filter-symbolic";
+                    selectable: true;
+                    subtitle: "Click to show all tracks";
+                    use-markup: false;
+                  }
+                }
+
+                $AriaFeaturesBrowserAlbumCreditBox credit-box {}
+              };
+
+              margin-bottom: 0;
+              margin-end: 0;
+              maximum-size: 600;
+            }
+
+            Adw.Clamp {
+              child: Box tracks-box {
+                orientation: vertical;
+                spacing: 24;
+              };
+            }
+          };
+
+          hscrollbar-policy: never;
+          vexpand: true;
+        }
+      }
+    };
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+    }
+  }
+}
+
+menu group-menu {
+  item {
+    action: "album.enqueue-replace";
+    label: "Replace Queue";
+  }
+
+  item {
+    action: "album.enqueue-next";
+    label: "Enqueue Next";
+  }
+
+  item {
+    action: "album.enqueue-end";
+    label: "Enqueue Last";
+  }
+}

@@ -1,0 +1,129 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesPlayerPlayer: Box {
+  height-request: 200;
+  width-request: 300;
+
+  Adw.ToolbarView {
+    content: Adw.ViewStack player-stack {
+      enable-transitions: true;
+      vhomogeneous: false;
+
+      Adw.ViewStackPage playlist-page {
+        child: Box playlist-holder {
+          hexpand: false;
+          orientation: vertical;
+          vexpand: true;
+
+          WindowHandle {
+            valign: fill;
+            vexpand: false;
+
+            Adw.Clamp {
+              child: CenterBox {
+                [center]
+                Picture album-picture {
+                  css-classes: [
+                    "cover",
+                  ];
+
+                  halign: center;
+                  height-request: 48;
+                  margin-bottom: 6;
+                  margin-end: 12;
+                  margin-start: 12;
+                  valign: start;
+                  visible: false;
+                }
+              };
+
+              maximum-size: 300;
+              valign: start;
+              visible: false;
+            }
+          }
+
+          $AriaFeaturesPlayerQueueQueue playlist {
+            vexpand: "True";
+          }
+        };
+
+        icon-name: "playlist-symbolic";
+        name: "playlist";
+      }
+
+      Adw.ViewStackPage lyrics-page {
+        child: Label {
+          label: "Insert Lyrics Custom Widget Here";
+        };
+
+        icon-name: "format-justify-left-symbolic";
+        name: "lyrics";
+        visible: false;
+      }
+    };
+
+    hexpand: true;
+    vexpand: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+
+      [start]
+      Adw.InlineViewSwitcher player-stack-switcher {
+        css-classes: [
+          "flat",
+        ];
+
+        display-mode: icons;
+        stack: player-stack;
+        visible: false;
+      }
+
+      [end]
+      MenuButton {
+        icon-name: "view-more-symbolic";
+        menu-model: queue-menu;
+      }
+    }
+
+    [bottom]
+    $AriaFeaturesPlayerPlaybackControls playback-controls {
+      margin-top: "0";
+    }
+  }
+}
+
+menu queue-menu {
+  item {
+    action: "aria-queue.shuffle";
+    label: "Shuffle Tracks";
+  }
+
+  item {
+    action: "aria-queue.consume";
+    label: "Remove track after playback";
+  }
+
+  section {
+    item {
+      action: "aria-queue.repeat";
+      label: "Repeat Disabled";
+      target: "Disabled";
+    }
+
+    item {
+      action: "aria-queue.repeat";
+      label: "Repeat All";
+      target: "All";
+    }
+
+    item {
+      action: "aria-queue.repeat";
+      label: "Repeat Track";
+      target: "Single";
+    }
+  }
+}

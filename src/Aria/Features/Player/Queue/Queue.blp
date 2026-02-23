@@ -1,0 +1,59 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesPlayerQueueQueue: Stack {
+  vexpand: true;
+  vhomogeneous: false;
+
+  StackPage playlist-page {
+    child: Overlay now-playing-overlay {
+      child: ScrolledWindow {
+        propagate-natural-height: true;
+
+        ListView tracks-list-view {
+          css-classes: [
+            "navigation-sidebar",
+            "playlist",
+          ];
+
+          tab-behavior: item;
+
+          PopoverMenu track-popover-menu {
+            halign: start;
+            has-arrow: false;
+          }
+
+          PopoverMenu queue-popover-menu {
+            halign: start;
+            has-arrow: false;
+          }
+
+          GestureLongPress queue-gesture-long-press {
+            touch-only: true;
+          }
+
+          GestureClick queue-gesture-click {
+            button: 0;
+          }
+        }
+      };
+    };
+
+    name: "playlist-page";
+  }
+
+  StackPage empty-playlist-page {
+    child: Adw.StatusPage {
+      css-classes: [
+        "compact",
+        "                            no-drop-highlight",
+        "                        ",
+      ];
+
+      icon-name: "documentinfo-symbolic";
+      title: "Queue is Empty";
+    };
+
+    name: "empty-playlist-page";
+  }
+}

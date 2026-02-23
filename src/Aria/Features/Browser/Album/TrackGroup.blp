@@ -1,0 +1,73 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserAlbumTrackGroup: Box {
+  orientation: vertical;
+  spacing: 6;
+
+  Box {
+    orientation: vertical;
+
+    Box header-box {
+      orientation: horizontal;
+
+      Label header-label {
+        css-classes: [
+          "heading",
+        ];
+
+        ellipsize: end;
+        hexpand: true;
+        single-line-mode: true;
+        valign: fill;
+        xalign: 0;
+      }
+
+      Adw.SplitButton {
+        action-name: "group.enqueue-default";
+
+        css-classes: [
+          "flat",
+        ];
+
+        halign: end;
+        icon-name: "list-low-priority-symbolic";
+        menu-model: group-menu;
+      }
+    }
+
+    Box info-box {
+      orientation: vertical;
+
+      $AriaFeaturesBrowserAlbumCreditBox credit-box {}
+    }
+  }
+
+  PopoverMenu track-popover-menu {
+    halign: start;
+    has-arrow: false;
+  }
+
+  ListBox tracks-listbox {
+    css-classes: [
+      "boxed-list",
+    ];
+  }
+}
+
+menu group-menu {
+  item {
+    action: "group.enqueue-replace";
+    label: "Replace Queue";
+  }
+
+  item {
+    action: "group.enqueue-next";
+    label: "Enqueue Next";
+  }
+
+  item {
+    action: "group.enqueue-end";
+    label: "Enqueue Last";
+  }
+}

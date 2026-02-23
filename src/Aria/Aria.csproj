@@ -25,28 +25,37 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="MpcNET">
-        <HintPath>..\..\..\..\..\.nuget\packages\mpcnet\1.6.6\lib\netstandard2.0\MpcNET.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <BlueprintFiles Include="Features\**\*.blp" />
-    </ItemGroup>
-
-    <!-- Target om .BLP -> .XML te compileren -->
+        <BlueprintFiles Include="Features/**/*.blp" />
+    </ItemGroup>    
+    
     <Target Name="CompileBlueprints"
-            BeforeTargets="BeforeBuild"
+            BeforeTargets="BeforeBuild;BeforePublish"
             Inputs="@(BlueprintFiles)"
-            Outputs="@(BlueprintFiles->'$(IntermediateOutputPath)%(Filename).ui')">
-        <Exec Command='blueprint-compiler compile --output "$(IntermediateOutputPath)%(BlueprintFiles.Filename).ui" "%(BlueprintFiles.FullPath)"' />
+            Outputs="@(BlueprintFiles->'$(IntermediateOutputPath)ui/%(Filename).ui')">
+
+        <Message Text="Compiling @(BlueprintFiles->Count()) blueprint files..." Importance="high" />
+        <Message Text="Output path: $(IntermediateOutputPath)ui/" Importance="high" />
+        <MakeDir Directories="$(IntermediateOutputPath)ui/" />
+
+        <Exec Command='blueprint-compiler compile --output "$(IntermediateOutputPath)ui/%(BlueprintFiles.Filename).ui" "%(BlueprintFiles.FullPath)"'
+              IgnoreStandardErrorWarningFormat="false" />
+        
     </Target>
 
-    <!-- Add XML (compiled blueprint) files as embedded resources -->
-    <ItemGroup>
-        <EmbeddedResource Include="$(IntermediateOutputPath)**\*.ui">
-            <LogicalName>ui\%(Filename).ui</LogicalName>
-        </EmbeddedResource>
-    </ItemGroup>
+    <Target Name="AddCompiledBlueprintsToResources"
+            BeforeTargets="BeforeBuild;BeforePublish"
+            DependsOnTargets="CompileBlueprints">
 
+        <ItemGroup>
+            <_CompiledBlueprintUi Include="$(IntermediateOutputPath)ui/*.ui" />
+
+            <EmbeddedResource Include="@(_CompiledBlueprintUi)">
+                <LogicalName>ui/%(Filename).ui</LogicalName>
+            </EmbeddedResource>
+        </ItemGroup>
+
+        <Error Text="No .ui files found in $(IntermediateOutputPath)ui/. Blueprint compiler may not be installed or failed to compile .blp files." Condition="'@(_CompiledBlueprintUi)' == ''" />
+
+    </Target>
+    
 </Project>

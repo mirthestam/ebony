@@ -1,0 +1,14 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage: Box {
+  hexpand: false;
+
+  Adw.StatusPage {
+    description: "You have no saved playlists.";
+    hexpand: true;
+    icon-name: "folder-music-symbolic";
+    title: "No playlists";
+    vexpand: false;
+  }
+}

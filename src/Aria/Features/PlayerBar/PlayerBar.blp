@@ -1,0 +1,83 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesPlayerBarPlayerBar: Box {
+  Overlay {
+    child: Box {
+      css-classes: [
+        "toolbar",
+      ];
+
+      hexpand: false;
+      vexpand: false;
+
+      Adw.Clamp art-clam {
+        halign: start;
+        hexpand: false;
+        maximum-size: 34;
+        orientation: vertical;
+        unit: px;
+        valign: fill;
+        vexpand: false;
+
+        Picture cover-picture {
+          content-fit: contain;
+
+          css-classes: [
+            "cover",
+          ];
+
+          halign: fill;
+          height-request: 32;
+          hexpand: false;
+          valign: fill;
+          vexpand: false;
+          width-request: 32;
+        }
+      }
+
+      Box title-box {
+        hexpand: true;
+        orientation: vertical;
+        valign: center;
+
+        Label title-label {
+          ellipsize: end;
+          xalign: 0;
+        }
+
+        Label subtitle-label {
+          css-classes: [
+            "dimmed",
+            "caption",
+            "                                        ",
+          ];
+
+          ellipsize: end;
+          xalign: 0;
+        }
+      }
+
+      $AriaFeaturesPlayerMediaControls media-controls {}
+    };
+
+    hexpand: true;
+
+    [overlay]
+    ProgressBar elapsed-bar {
+      css-classes: [
+        "osd",
+        "top",
+        "horizontal",
+      ];
+
+      ellipsize: none;
+      fraction: 0.25;
+      hexpand: false;
+      inverted: false;
+      show-text: false;
+      valign: start;
+      vexpand: false;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+using Gtk 4.0;
+
+template $AriaFeaturesBrowserBrowserHost: Box {
+  hexpand: true;
+  vexpand: true;
+
+  Stack browser-state-stack {
+    hexpand: true;
+    vexpand: true;
+
+    StackPage empty-state-page {
+      child: $AriaFeaturesBrowserBrowserEmptyPage browser-empty-page {};
+
+      name: "empty-state-page";
+    }
+
+    StackPage browser-state-page {
+      child: $AriaFeaturesBrowserBrowserPage browser-page {};
+
+      name: "browser-state-page";
+    }
+  }
+}

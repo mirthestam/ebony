@@ -1,0 +1,174 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $AriaFeaturesBrowserArtistsArtistsPage: Adw.NavigationPage {
+  child: Adw.ToolbarView {
+    content: Box {
+      orientation: vertical;
+
+      ScrolledWindow {
+        hexpand: true;
+        vexpand: true;
+
+        ListView artists-list-view {
+          css-classes: [
+            "navigation-sidebar",
+          ];
+
+          show-separators: false;
+          single-click-activate: true;
+          vexpand: true;
+        }
+      }
+
+      Separator {
+        can-focus: false;
+        can-target: false;
+        focus-on-click: false;
+        halign: fill;
+        height-request: -1;
+        hexpand: false;
+        margin-end: 8;
+        margin-start: 8;
+        orientation: horizontal;
+        overflow: visible;
+        sensitive: false;
+        valign: start;
+        vexpand: false;
+        vexpand-set: false;
+      }
+
+      ListBox navigation-menu {
+        activate-on-single-click: true;
+
+        css-classes: [
+          "navigation-sidebar",
+        ];
+
+        show-separators: false;
+        valign: end;
+
+        ListBoxRow all-albums-row {
+          action-name: "aria-browser.show-all-albums";
+
+          child: Label {
+            label: "All Albums";
+            lines: -1;
+            xalign: 0;
+          };
+        }
+
+        ListBoxRow playlists-row {
+          action-name: "aria-browser.show-playlists";
+
+          child: Label {
+            label: "Playlists";
+            lines: -1;
+            xalign: 0;
+          };
+        }
+      }
+    };
+
+    [top]
+    Adw.HeaderBar {
+      [start]
+      Button search-button {
+        action-name: "aria-browser.search";
+        icon-name: "system-search-symbolic";
+      }
+
+      [end]
+      MenuButton main-menu-button {
+        icon-name: "open-menu-symbolic";
+        menu-model: artists-menu;
+      }
+
+      [title]
+      MenuButton artists-menu-button {
+        active: false;
+
+        css-classes: [
+          "flat",
+          "popup",
+        ];
+
+        label: "Artists";
+        menu-model: artists-filter-menu;
+        visible: true;
+      }
+    }
+  };
+
+  title: "Artists";
+}
+
+menu artists-menu {
+  section artists-section {
+    item {
+      action: "win.disconnect";
+      label: "_Disconnect";
+    }
+
+    item {
+      action: "aria-browser.refresh-library";
+      label: "Refresh Library";
+    }
+  }
+
+  section artists-main-section {
+    item {
+      action: "app.shortcuts";
+      label: "Keyboard Shortcuts";
+    }
+
+    item {
+      action: "win.about";
+      label: "_About Aria";
+    }
+  }
+}
+
+menu artists-filter-menu {
+  section filter-main-section {
+    item {
+      action: "artists.filter";
+      label: "Artists";
+      target: "Main";
+    }
+
+    item {
+      action: "artists.filter";
+      label: "All Artists";
+      target: "Artists";
+    }
+  }
+
+  section {
+    label: "Classical Music";
+
+    item {
+      action: "artists.filter";
+      label: "Composers";
+      target: "Composers";
+    }
+
+    item {
+      action: "artists.filter";
+      label: "Conductors";
+      target: "Conductors";
+    }
+
+    item {
+      action: "artists.filter";
+      label: "Ensembles";
+      target: "Ensembles";
+    }
+
+    item {
+      action: "artists.filter";
+      label: "Performers";
+      target: "Performers";
+    }
+  }
+}
