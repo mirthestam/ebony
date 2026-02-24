@@ -83,12 +83,20 @@ public partial class Queue
 
     public void CurrentTrackIndex(uint? index, PlaybackState state)
     {
+        if (index == Gtk.Constants.INVALID_LIST_POSITION)
+        {
+            index = null;
+        }
+        
         // Need to find the current playing track in the ListStore.
         if (_currentTrackIndex.HasValue)
         {
-            if (_listStore.GetObject(_currentTrackIndex.Value) is QueueTrackModel previousTrack)
+            if (_currentTrackIndex != Gtk.Constants.INVALID_LIST_POSITION)
             {
-                previousTrack.Playing = PlaybackState.Unknown;
+                if (_listStore.GetObject(_currentTrackIndex.Value) is QueueTrackModel previousTrack)
+                {
+                    previousTrack.Playing = PlaybackState.Unknown;
+                }
             }
         }
 
