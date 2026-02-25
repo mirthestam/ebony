@@ -99,7 +99,7 @@ public partial class CreditBox
         // Format the button
         var displayText = artist.Artist.Name;
         var button = Button.NewWithLabel(displayText);
-        //button.AddCssClass("link");
+        button.SetCanShrink(true);
         button.AddCssClass("flat");
         button.AddCssClass("artist-link");
         button.AddCssClass(AdwStyles.Colors.Accent);

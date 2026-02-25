@@ -109,7 +109,7 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
     }
 
     public async void Receive(QueueStateChangedMessage message)
-    {
+    { 
         try
         {
             await RefreshAsync(message.Value);
@@ -179,7 +179,7 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
             {
                 await GtkDispatch.InvokeIdleAsync(() => 
                 {
-                    View?.SetCurrentTrack(null);
+                    View?.SetCurrentTrack(null, QueueMode.Playlist);
                 }, cancellationToken);                
             }
             else
@@ -187,7 +187,7 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
                 var track = _aria.Queue.CurrentTrack;
                 await GtkDispatch.InvokeIdleAsync(() =>
                 {
-                    View?.SetCurrentTrack(track);
+                    View?.SetCurrentTrack(track, _aria.Queue.Mode);
                 }, cancellationToken);
             }
             

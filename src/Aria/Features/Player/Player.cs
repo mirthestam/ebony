@@ -92,9 +92,9 @@ public partial class Player
         _playbackControls.SetVolume(playerVolume);
     }
 
-    public void SetCurrentTrack(QueueTrackInfo? trackTrack)
+    public void SetCurrentTrack(QueueTrackInfo? trackTrack, QueueMode queueMode)
     {
-        _playbackControls.SetCurrentTrack(trackTrack);
+        _playbackControls.SetCurrentTrack(trackTrack, queueMode);
     }
 
     public void SetQueueMode(QueueMode queueMode)

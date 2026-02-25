@@ -122,16 +122,18 @@ public partial class PlaybackControls
         }
     }
 
-    public void SetCurrentTrack(QueueTrackInfo? trackInfo)
+    public void SetCurrentTrack(QueueTrackInfo? trackInfo, QueueMode queueMode)
     {
         _trackListItem.Visible = trackInfo != null;
         
         if (trackInfo == null) return;
         
-        // TODO: Maybe make a separate widget instead of reusing the QueueTrackModel
-        // if it gets modified too much
+
+        // TODO: Make this widget a clone
+        // as it is defintely going to behave differently from normal tracks in the queue.
+        // We are already abusing the queueModel 
         var queueModel = QueueModel.NewWithProperties([]);
-        queueModel.Mode = QueueMode.Playlist;
+        queueModel.Mode = queueMode;
         
         var model = QueueTrackModel.NewFromQueueTrackInfo(trackInfo, queueModel);
         _trackListItem.Bind(model);
