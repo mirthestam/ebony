@@ -1,5 +1,6 @@
 using Aria.Core.Library;
 using Aria.Core.Player;
+using Aria.Core.Queue;
 using Aria.Features.Player.Queue;
 using Aria.Infrastructure;
 using Gdk;
@@ -126,7 +127,13 @@ public partial class PlaybackControls
         _trackListItem.Visible = trackInfo != null;
         
         if (trackInfo == null) return;
-        var model = QueueTrackModel.NewFromQueueTrackInfo(trackInfo);
+        
+        // TODO: Maybe make a separate widget instead of reusing the QueueTrackModel
+        // if it gets modified too much
+        var queueModel = QueueModel.NewWithProperties([]);
+        queueModel.Mode = QueueMode.Playlist;
+        
+        var model = QueueTrackModel.NewFromQueueTrackInfo(trackInfo, queueModel);
         _trackListItem.Bind(model);
     }
     

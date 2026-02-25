@@ -19,23 +19,23 @@ template $AriaFeaturesPlayerQueueTrackListItem: Box {
     spacing: 3;
 
     Box {
+      visible: true;
+
       Adw.Clamp {
         maximum-size: 48;
         valign: center;
+        visible: true;
 
-        Overlay {
-          child: Picture cover-picture {
-            css-classes: [
-              "cover",
-            ];
+        Picture cover-picture {
+          css-classes: [
+            "cover",
+          ];
 
-            height-request: 48;
-            width-request: 48;
-          };
-
+          height-request: 48;
           margin-bottom: 6;
           margin-end: 6;
           margin-top: 6;
+          width-request: 48;
         }
       }
 

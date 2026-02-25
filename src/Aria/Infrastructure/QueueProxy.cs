@@ -27,14 +27,15 @@ public class QueueProxy : IQueueSource
     public ShuffleSettings Shuffle => _innerQueue?.Shuffle ?? ShuffleSettings.Default;
     public RepeatSettings Repeat => _innerQueue?.Repeat ?? RepeatSettings.Default;
     public ConsumeSettings Consume => _innerQueue?.Consume ?? ConsumeSettings.Default;
+    public QueueMode Mode => _innerQueue?.Mode ?? QueueMode.Playlist;
 
     public Task SetShuffleAsync(bool enabled) => _innerQueue?.SetShuffleAsync(enabled) ?? Task.CompletedTask;
     public Task SetRepeatAsync(RepeatMode repeatMode) => _innerQueue?.SetRepeatAsync(repeatMode) ?? Task.CompletedTask;
     public Task SetConsumeAsync(bool enabled) => _innerQueue?.SetConsumeAsync(enabled) ?? Task.CompletedTask;
-    public Task<IEnumerable<QueueTrackInfo>> GetTracksAsync() => _innerQueue?.GetTracksAsync() ?? Task.FromResult(Enumerable.Empty<QueueTrackInfo>());
+    public IEnumerable<QueueTrackInfo> Tracks => _innerQueue?.Tracks ?? [];
 
     public QueueTrackInfo? CurrentTrack => _innerQueue?.CurrentTrack;
-    
+
     public Task EnqueueAsync(Info item, EnqueueAction action) => _innerQueue?.EnqueueAsync(item, action) ?? Task.CompletedTask;
     public Task EnqueueAsync(IEnumerable<Info> items, EnqueueAction action) => _innerQueue?.EnqueueAsync(items, action) ?? Task.CompletedTask;
 

@@ -114,7 +114,6 @@ public class AriaEngine(
             
             SetState(EngineState.Seeding);
             
-            await _queueProxy.GetTracksAsync().ConfigureAwait(false);
             await _libraryProxy.GetArtistsAsync(cancellationToken).ConfigureAwait(false);
             
             SetState(EngineState.Ready);

@@ -201,6 +201,8 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         {
             await GtkDispatch.InvokeIdleAsync(() =>
             {
+                // TODO: Mode flag?
+                View?.SetQueueMode(_aria.Queue.Mode);                
                 _ariaPlayerPreviousTrackAction.SetEnabled(_aria.Queue.Order.CurrentIndex > 0);
                 _ariaPlayerNextTrackAction.SetEnabled(_aria.Queue.Order.HasNext);
                 _ariaPlayerPlayPauseAction.SetEnabled(_aria.Queue.Length > 0);
@@ -233,21 +235,44 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         
         try
         {
-            var track = _aria.Queue.CurrentTrack;
-            if (track == null)
+            AssetInfo? coverInfo = null;
+            
+            switch (_aria.Queue.Mode)
+            {
+                case QueueMode.SingleAlbum:
+                    var firstTrack = _aria.Queue.Tracks.FirstOrDefault();
+                    if (firstTrack != null)
+                    {
+                        coverInfo = firstTrack.Track.Assets.FrontCover;
+                    }
+                    break;
+                
+                case QueueMode.Playlist:
+                    var track = _aria.Queue.CurrentTrack;
+                    if (track != null)
+                    {
+                        coverInfo = track.Track.Assets.FrontCover;
+                    }
+                
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            if (coverInfo == null)
             {
                 await GtkDispatch.InvokeIdleAsync(() =>
                 {
                     View?.ClearCoverArt();
                 }, cancellationToken);
-                
+            
                 _currentCoverArt?.Dispose();
                 _currentCoverArt = null;
-                
+
                 return;
             }
             
-            var coverInfo = track.Track.Assets.FrontCover;
             //var texture = await _resourceTextureLoader.LoadFromAlbumResourceAsync(coverInfo?.Id ?? Id.Empty, cancellationToken).ConfigureAwait(false);
             var newCoverArt = await Task.Run(
                 () => _artAssetLoader.LoadFromAssetAsync(coverInfo?.Id ?? Id.Empty, cancellationToken),

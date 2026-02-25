@@ -4,7 +4,6 @@ using Aria.Core.Extraction;
 using Aria.Core.Library;
 using Aria.Core.Player;
 using Aria.Infrastructure;
-using Gdk;
 using GObject;
 using Object = GObject.Object;
 
@@ -13,10 +12,12 @@ namespace Aria.Features.Player.Queue;
 [Subclass<Object>]
 public partial class QueueTrackModel : INotifyPropertyChanged
 {
-    public static QueueTrackModel NewFromQueueTrackInfo(QueueTrackInfo queueTrack)
+    public static QueueTrackModel NewFromQueueTrackInfo(QueueTrackInfo queueTrack, QueueModel queueModel)
     {
         var model = NewWithProperties([]);
+        model.Queue = queueModel;
         model.Parse(queueTrack);
+        
         return model;
     }
 
@@ -58,7 +59,9 @@ public partial class QueueTrackModel : INotifyPropertyChanged
         TrackId = queueTrack.Track.Id;
         Position = queueTrack.Position;    
     }
-    
+
+    public QueueModel Queue { get; set; }
+
     public uint Position { get; set; }
     
     public Id QueueTrackId { get; set; }

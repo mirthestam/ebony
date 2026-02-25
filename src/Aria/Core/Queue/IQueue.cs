@@ -20,15 +20,20 @@ public interface IQueue
     RepeatSettings Repeat { get; }
     ConsumeSettings Consume { get; }
 
+    /// <summary>
+    /// Gets the mode of the queue, indicating whether it operates in single album mode or as a playlist.
+    /// </summary>
+    public QueueMode Mode { get; }
+
     Task SetShuffleAsync(bool enabled);
     Task SetRepeatAsync(RepeatMode repeatMode);
     Task SetConsumeAsync(bool enabled);
     
+    
     /// <summary>
     /// Gets detailed information about the tracks in this queue
     /// </summary>
-    /// <returns></returns>
-    Task<IEnumerable<QueueTrackInfo>> GetTracksAsync();
+    IEnumerable<QueueTrackInfo> Tracks { get; }
     
     /// <summary>
     /// Gets detailed information about the currently playing track.

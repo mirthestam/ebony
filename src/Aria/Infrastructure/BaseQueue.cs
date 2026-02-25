@@ -20,6 +20,8 @@ public abstract class BaseQueue : IQueueSource
 
     public virtual ConsumeSettings Consume  { get; protected set; }
 
+    public virtual QueueMode Mode => QueueMode.Playlist;
+
     public virtual QueueTrackInfo? CurrentTrack  { get; protected set; }
 
     public virtual Task SetShuffleAsync(bool enabled) => Task.CompletedTask;
@@ -28,7 +30,7 @@ public abstract class BaseQueue : IQueueSource
 
     public virtual Task SetConsumeAsync(bool enabled) => Task.CompletedTask;
 
-    public virtual Task<IEnumerable<QueueTrackInfo>> GetTracksAsync() => Task.FromResult(Enumerable.Empty<QueueTrackInfo>());
+    public virtual IEnumerable<QueueTrackInfo> Tracks => [];
     
     public virtual Task EnqueueAsync(Info item, EnqueueAction action) => Task.CompletedTask;
     

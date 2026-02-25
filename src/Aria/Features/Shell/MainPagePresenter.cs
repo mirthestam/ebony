@@ -1,5 +1,6 @@
 using Aria.Core;
 using Aria.Core.Connection;
+using Aria.Core.Extraction;
 using Aria.Core.Library;
 using Aria.Core.Queue;
 using Aria.Features.Browser;
@@ -60,9 +61,22 @@ public partial class MainPagePresenter : IRootPresenter<MainPage>, IRecipient<Qu
         {
             if (!message.Value.HasFlag(QueueStateChangedFlags.PlaybackOrder)) return;
             
-            // The current track has changed.
-            var track = _aria.Queue.CurrentTrack;
-            var assetId = track?.Track.Assets.FrontCover?.Id;
+            Id? assetId;
+
+            switch (_aria.Queue.Mode)
+            {
+                case QueueMode.SingleAlbum:
+                    var firstTrack = _aria.Queue.Tracks.FirstOrDefault();
+                    assetId = firstTrack?.Track.Assets.FrontCover?.Id;                    
+                    break;
+                case QueueMode.Playlist:
+                    var track = _aria.Queue.CurrentTrack;
+                    assetId = track?.Track.Assets.FrontCover?.Id;                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
             if (assetId == null)
             {
                 View?.Colorize(null);

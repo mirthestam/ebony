@@ -95,6 +95,27 @@ public class MPDTagParser(ITagParser tagParser)
             if (tag.Name.Equals(MPDTagNames.FileTags.File, StringComparison.OrdinalIgnoreCase) && currentTrackTags.Count > 0)
             {
                 var track = tagParser.ParseQueueTrack(currentTrackTags);
+                
+                // TODO: adding this track asset is duplicatead in a few places.
+                // However, it is MPD specific, so DRY.
+                if (track.Track.FileName != null)
+                {
+                    // This logic is duplicate with logic in the library.
+                    track = track with
+                    {
+                        Track = track.Track with
+                        {
+                            Assets =
+                            [
+                                new AssetInfo
+                                {
+                                    Id = new AssetId(track.Track.FileName),
+                                    Type = AssetType.FrontCover
+                                }
+                            ]
+                        }
+                    };
+                }
                 yield return track;
                 currentTrackTags.Clear();
             }

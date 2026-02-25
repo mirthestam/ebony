@@ -36,12 +36,12 @@
   <ui filename="../Aria.App/Resources/shortcuts-dialog.ui" sha256="842e582a1c2a2a3f83d5e9f8bba3ff6acb89d5fa06214e96ac9bc8fa42b7e8b9"/>
   <ui template-class="AriaFeaturesPlayerQueueQueue" filename="Features/Player/Queue/Queue.blp" sha256="cb0d7992835411b6e586b5fa15a1853d38b1190033db360b1f17c311c28a6b9f"/>
   <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistNameCell" filename="Features/Browser/Playlists/PlaylistNameCell.blp" sha256="5bb4c7d4c1b5ed130eb332aaf87cc2857540dbf55bb2165c6f91eb13d134295b"/>
-  <ui template-class="AriaFeaturesPlayerQueueTrackListItem" filename="Features/Player/Queue/TrackListItem.blp" sha256="ea28ad99169df70a3bfa4c5ed7a990eca194ecddf822dad72c3a52f607ef2feb"/>
   <ui template-class="AriaFeaturesDetailsTrackDetailsDialog" filename="Features/Details/TrackDetailsDialog.blp" sha256="7dc81d24a8854b79b0e9296d2fd28161bd664b137fe911c4d875931f888c2a64"/>
   <ui template-class="AriaFeaturesBrowserSharedAlbumListItem" filename="Features/Browser/Shared/AlbumListItem.blp" sha256="6b2d824aca40052a2bcf670db72979ccf0c48d97931d807b069f4e0ccd6528cb"/>
   <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsPage" filename="Features/Browser/Playlists/PlaylistsPage.blp" sha256="d625cc02f987e15d446be0abe43a6ca7730bb241bbeec3a11ad26fb7c2b107f6"/>
   <ui template-class="AriaFeaturesBrowserPlaylistsRenamePlaylistDialog" filename="Features/Browser/Playlists/RenamePlaylistDialog.blp" sha256="96bb701a44d659963454b6e04d72966847f731ca9d0d8cfce44455ac133e5210"/>
   <ui template-class="AriaFeaturesPlayerQueueSaveQueueDialog" filename="Features/Player/Queue/SaveQueueDialog.blp" sha256="525b1c84803ad8782f4645b620f2a1d965ba6a1cf2e30cd28db8253e580d449b"/>
+  <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage" filename="Features/Browser/Playlists/PlaylistsEmptyPage.blp" sha256="210032aec357b779053cb857856b42332361160502218cb2b0f7630799c96a5c"/>
   <ui template-class="AriaFeaturesPlayerBarPlayerBar" filename="Features/PlayerBar/PlayerBar.blp" sha256="1eeece751365c9420565719d5bd7afa2dda17e4f436da678e8ae84e888a4cf39">
     <requires>AriaFeaturesPlayerMediaControls</requires>
   </ui>
@@ -72,10 +72,6 @@
     <requires>AriaFeaturesBrowserArtistsArtistsPage</requires>
     <requires>AriaFeaturesBrowserSearchSearchPage</requires>
   </ui>
-  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp" sha256="08c444636f60cb45c3fcdbd54506768b084d896db517dbd3726a1b27c23010cd">
-    <requires>AriaFeaturesPlayerQueueQueue</requires>
-    <requires>AriaFeaturesPlayerPlaybackControls</requires>
-  </ui>
   <ui template-class="AriaFeaturesShellMainPage" filename="Features/Shell/MainPage.blp" sha256="34476ac680577d601425a8723a4fc5ed22b752a59de2f81a3c7a90547818c42a">
     <requires>AriaFeaturesPlayerBarPlayerBar</requires>
     <requires>AriaFeaturesBrowserBrowserHost</requires>
@@ -86,5 +82,9 @@
     <requires>AriaFeaturesShellWelcomeWelcomePage</requires>
     <requires>AriaFeaturesShellConnectingPage</requires>
   </ui>
-  <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage" filename="Features/Browser/Playlists/PlaylistsEmptyPage.blp"/>
+  <ui template-class="AriaFeaturesPlayerQueueTrackListItem" filename="Features/Player/Queue/TrackListItem.blp"/>
+  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp">
+    <requires>AriaFeaturesPlayerQueueQueue</requires>
+    <requires>AriaFeaturesPlayerPlaybackControls</requires>
+  </ui>
 </cambalache-project>

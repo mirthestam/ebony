@@ -137,7 +137,7 @@ public sealed partial class ResourceCacheLibrarySource : ILibrarySource
             try
             {
                 TryDelete(fileName);
-                if (!TryCreateThumbnailPng(await File.ReadAllBytesAsync(tmp, cancellationToken), 128, 128, fileName))
+                if (!TryCreateThumbnailPng(await File.ReadAllBytesAsync(tmp, cancellationToken), 256, 256, fileName))
                 {
                     throw new Exception("Failed to create thumbnail");
                 }

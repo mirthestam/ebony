@@ -25,6 +25,8 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
     // Reuse UI models between refreshes to avoid churn when only order changes.
     private readonly Dictionary<Id, QueueTrackModel> _modelsByQueueTrackId = new();
 
+    private readonly QueueModel _queueModel = QueueModel.NewWithProperties([]);
+
     private void Abort()
     {
         _loadCts?.Cancel();
@@ -158,14 +160,14 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
 
             _loadCts = CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken);
             var ct = _loadCts.Token;
-
-            var tracks = await _aria.Queue.GetTracksAsync().ConfigureAwait(false);
+            
+            _queueModel.Mode = _aria.Queue.Mode;
 
             // Build the ordered model list by reusing existing models where possible.
             var newOrderedModels = new List<QueueTrackModel>();
             var seenIds = new HashSet<Id>();
 
-            foreach (var t in tracks)
+            foreach (var t in _aria.Queue.Tracks)
             {
                 ct.ThrowIfCancellationRequested();
 
@@ -175,7 +177,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
 
                 if (!_modelsByQueueTrackId.TryGetValue(queueTrackId, out var model))
                 {
-                    model = QueueTrackModel.NewFromQueueTrackInfo(t);
+                    model = QueueTrackModel.NewFromQueueTrackInfo(t, _queueModel);
                     _modelsByQueueTrackId[queueTrackId] = model;
                 }
                 else

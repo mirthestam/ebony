@@ -1,6 +1,4 @@
 using Aria.Backends.MPD.Connection;
-using Aria.Backends.MPD.Connection.Commands;
-using Aria.Backends.MPD.Connection.Commands.Playlist;
 using Aria.Backends.MPD.Connection.Commands.Queue;
 using Aria.Backends.MPD.Extraction;
 using Aria.Core.Extraction;
@@ -10,7 +8,6 @@ using Aria.Infrastructure;
 using Microsoft.Extensions.Logging;
 using MpcNET;
 using MpcNET.Commands.Playback;
-using MpcNET.Commands.Playlist;
 using MpcNET.Commands.Queue;
 using MpcNET.Commands.Reflection;
 using ListPlaylistInfoCommand = Aria.Backends.MPD.Connection.Commands.Playlist.ListPlaylistInfoCommand;
@@ -21,7 +18,11 @@ namespace Aria.Backends.MPD;
 
 public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, ILogger<Queue> logger) : BaseQueue
 {
-    public override async Task<IEnumerable<QueueTrackInfo>> GetTracksAsync()
+    private readonly List<QueueTrackInfo> _tracksList = [];
+
+    public override IEnumerable<QueueTrackInfo> Tracks => _tracksList;
+
+    private async Task RefreshTracksAsync()
     {
         var (isSuccess, tagPairs) = await client.SendCommandAsync(new PlaylistInfoCommand()).ConfigureAwait(false);
         if (!isSuccess) throw new InvalidOperationException("Failed to get playlist info");
@@ -29,7 +30,18 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
 
         var tags = tagPairs.Select(kvp => new Tag(kvp.Key, kvp.Value)).ToList();
 
-        return mpdTagParser.ParseQueue(tags);
+        var tracks = mpdTagParser.ParseQueue(tags);
+        _tracksList.Clear();
+        _tracksList.AddRange(tracks);
+        
+        var mode = QueueMode.Playlist;
+        var firstTrack = _tracksList.FirstOrDefault();
+        if (firstTrack != null && _tracksList.All(t => t.Track.AlbumId == firstTrack.Track.AlbumId))
+        {
+            mode = QueueMode.SingleAlbum;
+        }
+
+        _mode = mode;        
     }
 
     public override Task EnqueueAsync(Info info, EnqueueAction action)
@@ -100,8 +112,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
 
             // When the target is located after the source in the queue, move it up by one position.
             // MPD seems to handle this by first removing the track, then reinserting it at the new index.
-            var tracks = await GetTracksAsync().ConfigureAwait(false);
-            var sourceTrack = tracks.FirstOrDefault(t => t.Id == queueTrackId);
+            var sourceTrack = _tracksList.FirstOrDefault(t => t.Id == queueTrackId);
             if (sourceTrack == null) throw new InvalidOperationException("Source track not found");
             if (targetPlaylistIndex > sourceTrack.Position) targetPlaylistIndex--;
 
@@ -114,6 +125,10 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
     }
 
+    public override QueueMode Mode => _mode;
+
+    private QueueMode _mode;
+    
     public override async Task ClearAsync()
     {
         try
@@ -289,7 +304,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
             logger.LogError(e, "Failed to play tracks");
         }
     }
-
+    
     public async Task UpdateFromStatusAsync(MpdStatus e)
     {
         // We received new information from MPD. Get all relevant information for this playlist.
@@ -375,6 +390,12 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
                 HasNext = e.NextSongId > 0
             };
             flags |= QueueStateChangedFlags.PlaybackOrder;
+        }
+
+        if (flags.HasFlag(QueueStateChangedFlags.Id) || flags.HasFlag(QueueStateChangedFlags.PlaybackOrder))
+        {
+            // Refresh the tracks
+            await RefreshTracksAsync();
         }
 
         if (flags.HasFlag(QueueStateChangedFlags.PlaybackOrder))

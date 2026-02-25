@@ -1,6 +1,7 @@
 using Aria.Core.Extraction;
 using Aria.Core.Library;
 using Aria.Core.Player;
+using Aria.Core.Queue;
 using Aria.Infrastructure;
 using Gdk;
 using GObject;
@@ -15,6 +16,8 @@ public delegate Task SeekRequestedAsyncHandler(TimeSpan position, CancellationTo
 public partial class Player
 {
     [Connect("album-picture")] private Picture _coverPicture;
+    [Connect("coverart-revealer")] private Revealer _coverArtRevealer;
+    
     [Connect("playback-controls")] private PlaybackControls _playbackControls;
     [Connect("playlist")] private Queue.Queue _queue;
     
@@ -92,5 +95,14 @@ public partial class Player
     public void SetCurrentTrack(QueueTrackInfo? trackTrack)
     {
         _playbackControls.SetCurrentTrack(trackTrack);
+    }
+
+    public void SetQueueMode(QueueMode queueMode)
+    {
+        _coverArtRevealer.RevealChild = queueMode switch
+        {
+            QueueMode.SingleAlbum => true,
+            _ => false
+        };
     }
 }

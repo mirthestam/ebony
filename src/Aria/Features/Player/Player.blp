@@ -16,32 +16,23 @@ template $AriaFeaturesPlayerPlayer: Box {
           orientation: vertical;
           vexpand: true;
 
-          WindowHandle {
-            valign: fill;
+          Revealer coverart-revealer {
+            child: Picture album-picture {
+              css-classes: [
+                "cover",
+              ];
+
+              height-request: 128;
+              margin-bottom: 12;
+              margin-end: 12;
+              margin-start: 12;
+              margin-top: 0;
+            };
+
+            reveal-child: false;
+            transition-duration: 500;
+            transition-type: slide_down;
             vexpand: false;
-
-            Adw.Clamp {
-              child: CenterBox {
-                [center]
-                Picture album-picture {
-                  css-classes: [
-                    "cover",
-                  ];
-
-                  halign: center;
-                  height-request: 48;
-                  margin-bottom: 6;
-                  margin-end: 12;
-                  margin-start: 12;
-                  valign: start;
-                  visible: false;
-                }
-              };
-
-              maximum-size: 300;
-              valign: start;
-              visible: false;
-            }
           }
 
           $AriaFeaturesPlayerQueueQueue playlist {
