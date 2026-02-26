@@ -97,7 +97,7 @@ public partial class PlayerPresenter
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Failed to set repeat");
+            LogFailedToSetRepeat(e);
             _messenger.Send(new ShowToastMessage("Failed to set repeat"));
         
             // Revert UI state to actual current value if call fails
@@ -113,7 +113,7 @@ public partial class PlayerPresenter
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Failed to set consume");
+            LogFailedToSetConsume(e);
             _messenger.Send(new ShowToastMessage("Failed to set consume"));
 
             // Revert UI state to actual current value if call fails
@@ -129,7 +129,7 @@ public partial class PlayerPresenter
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Failed to set shuffle");
+            LogFailedToSetShuffle(e);
             _messenger.Send(new ShowToastMessage("Failed to set shuffle"));
 
             // Revert UI state to actual current value if call fails
@@ -149,7 +149,7 @@ public partial class PlayerPresenter
         }
         catch(Exception e)
         {
-            _logger.LogWarning(e, "Failed to remove track(s)");
+            LogFailedToRemoveTracks(e);
             _messenger.Send(new ShowToastMessage($"Failed to remove track(s)."));
         }
     }
@@ -171,7 +171,7 @@ public partial class PlayerPresenter
         }
         catch (Exception e)
         {
-            LogFailedToEnqueueTracks(_logger, e);
+            LogFailedToEnqueueTracks(e);
             _messenger.Send(new ShowToastMessage($"Failed to enqueue tracks."));
         }        
     }
@@ -216,13 +216,11 @@ public partial class PlayerPresenter
             await _aria.Queue.SaveOrAppendToPlaylistAsync(dialog.PlaylistName);
             _messenger.Send(new ShowToastMessage($"Saved queue as '{dialog.PlaylistName}'."));
         }
-        catch 
+        catch (Exception ex) 
         {
-            // oK
+            LogFailedToSaveQueue(ex);
         }
-
     }
-    
     
     private async void AriaQueueClearActionOnOnActivate(SimpleAction sender, SimpleAction.ActivateSignalArgs args)
     {
@@ -324,5 +322,20 @@ public partial class PlayerPresenter
     partial void PlayerActionFailed(Exception e, string? action);    
  
     [LoggerMessage(LogLevel.Error, "Failed to enqueue tracks.")]
-    static partial void LogFailedToEnqueueTracks(ILogger<PlayerPresenter> logger, Exception e);    
+    partial void LogFailedToEnqueueTracks(Exception e);
+
+    [LoggerMessage(LogLevel.Error, "Failed to save queue")]
+    partial void LogFailedToSaveQueue(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set shuffle")]
+    partial void LogFailedToSetShuffle(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set repeat")]
+    partial void LogFailedToSetRepeat(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set consume")]
+    partial void LogFailedToSetConsume(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to remove track(s)")]
+    partial void LogFailedToRemoveTracks(Exception ex);
 }

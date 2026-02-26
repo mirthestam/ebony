@@ -48,10 +48,8 @@ public partial class SearchPagePresenter(ILogger<SearchPagePresenter> logger, IA
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            LogCouldNotSearchForSearchterm(searchTerm, e);           
         }
-        
     }
 
     private void Abort()
@@ -69,10 +67,13 @@ public partial class SearchPagePresenter(ILogger<SearchPagePresenter> logger, IA
 
     public void Reset()
     {
-        LogResettingSearchPage(logger);
+        LogResettingSearchPage();
         AbortAndClear();
     }
 
     [LoggerMessage(LogLevel.Debug, "Resetting search page")]
-    static partial void LogResettingSearchPage(ILogger<SearchPagePresenter> logger);
+    partial void LogResettingSearchPage();
+
+    [LoggerMessage(LogLevel.Error, "Could not search for {searchTerm}")]
+    partial void LogCouldNotSearchForSearchterm(string searchTerm, Exception ex);
 }

@@ -27,7 +27,7 @@ public class SaveCommand(
 
     public string Serialize()
     {
-        var method1 = method switch
+        var methodCommand = method switch
         {
             SaveMethod.Create => "create",
             SaveMethod.Append => "append",
@@ -35,7 +35,7 @@ public class SaveCommand(
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        return $"save \"{playlistName}\" {method1}";
+        return $"save \"{playlistName}\" {methodCommand}";
     }
 
     /// <summary>

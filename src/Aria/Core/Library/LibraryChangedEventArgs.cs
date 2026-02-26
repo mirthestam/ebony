@@ -1,6 +1,4 @@
-using Aria.Core.Library;
-
-namespace Aria.Core.Queue;
+namespace Aria.Core.Library;
 
 public class LibraryChangedEventArgs(LibraryChangedFlags flags) : EventArgs
 {

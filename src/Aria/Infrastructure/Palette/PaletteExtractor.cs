@@ -1,6 +1,8 @@
 using Gdk;
 using GdkPixbuf;
 
+namespace Aria.Infrastructure.Palette;
+
 public static class PaletteExtractor
 {
     public static RGBA[]? LoadPalette(Pixbuf pixelBuffer, int colorCount = 5)

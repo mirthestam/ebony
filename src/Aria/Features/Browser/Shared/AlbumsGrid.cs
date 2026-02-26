@@ -11,9 +11,6 @@ namespace Aria.Features.Browser.Shared;
 [Template<AssemblyResource>($"ui/{nameof(AlbumsGrid)}.ui")]
 public partial class AlbumsGrid
 {
-    // TODO: Context Menu
-    // TODO: Activation
-    
     public enum AlbumSorting
     {
         Title,

@@ -1,3 +1,5 @@
+namespace Aria.Infrastructure.Palette;
+
 internal sealed class VBox
 {
     public int R1, R2, G1, G2, B1, B2;

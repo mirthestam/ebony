@@ -62,9 +62,9 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         {
             await _aria.Player.SetVolumeAsync(e);
         }
-        catch
+        catch(Exception ex)
         {
-            // OK
+            LogFailedToSetVolume(ex);
         }
     }
 
@@ -102,9 +102,9 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         {
             await RefreshAsync(message.Value);
         }
-        catch
+        catch(Exception ex)
         {
-            // OK
+            LogFailedToHandlePlayerStateChange(ex);
         }
     }
 
@@ -114,9 +114,9 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         {
             await RefreshAsync(message.Value);
         }
-        catch
+        catch(Exception ex)
         {
-            // TODO log
+            LogFailedToHandleQueueStateChange(ex);
         }
     }
 
@@ -201,7 +201,6 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
         {
             await GtkDispatch.InvokeIdleAsync(() =>
             {
-                // TODO: Mode flag?
                 View?.SetQueueMode(_aria.Queue.Mode);                
                 _ariaPlayerPreviousTrackAction.SetEnabled(_aria.Queue.Order.CurrentIndex > 0);
                 _ariaPlayerNextTrackAction.SetEnabled(_aria.Queue.Order.HasNext);
@@ -265,9 +264,9 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
                 await GtkDispatch.InvokeIdleAsync(() =>
                 {
                     View?.ClearCoverArt();
+                    _currentCoverArt?.Dispose();                    
                 }, cancellationToken);
-            
-                _currentCoverArt?.Dispose();
+                
                 _currentCoverArt = null;
 
                 return;
@@ -301,5 +300,14 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
     }
     
     [LoggerMessage(LogLevel.Error, "Failed to load album cover")]
-    partial void LogFailedToLoadAlbumCover(Exception e);
+    partial void LogFailedToLoadAlbumCover(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set volume")]
+    partial void LogFailedToSetVolume(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to handle player state change")]
+    partial void LogFailedToHandlePlayerStateChange(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to handle queue state change")]
+    partial void LogFailedToHandleQueueStateChange(Exception ex);
 }

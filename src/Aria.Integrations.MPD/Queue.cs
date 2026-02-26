@@ -16,7 +16,7 @@ using SaveCommand = Aria.Backends.MPD.Connection.Commands.Playlist.SaveCommand;
 
 namespace Aria.Backends.MPD;
 
-public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, ILogger<Queue> logger) : BaseQueue
+public partial class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, ILogger<Queue> logger) : BaseQueue
 {
     private readonly List<QueueTrackInfo> _tracksList = [];
 
@@ -121,7 +121,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to move track");
+            LogFailedToMoveTrack(logger, e);
         }
     }
 
@@ -137,7 +137,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to clear queue");
+            LogFailedToClearQueue(logger, e);
         }
     }
 
@@ -158,7 +158,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to save queue");
+            LogFailedToSaveQueue(logger, e);
         }
     }
 
@@ -171,7 +171,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to remove track");
+            LogFailedToRemoveTrack(logger, e);
         }
     }
 
@@ -184,7 +184,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to set shuffle");
+            LogFailedToSetShuffle(logger, e);
         }
     }
 
@@ -222,7 +222,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to set repeat");
+            LogFailedToSetRepeat(logger, e);
         }
     }
 
@@ -235,7 +235,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to set consume");
+            LogFailedToSetConsume(logger, e);
         }
     }
 
@@ -253,7 +253,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to play tracks");
+            LogFailedToPlayTracks(logger, e);
         }
     }
 
@@ -301,7 +301,7 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to play tracks");
+            LogFailedToPlayTracks(logger, e);
         }
     }
     
@@ -417,20 +417,9 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
                 var trackInfo = parser.ParseQueueTrack(tags);
                 if (trackInfo.Track.FileName != null)
                 {
-                    // This logic is duplicate with logic in the library.
                     trackInfo = trackInfo with
                     {
-                        Track = trackInfo.Track with
-                        {
-                            Assets =
-                            [
-                                new AssetInfo
-                                {
-                                    Id = new AssetId(trackInfo.Track.FileName),
-                                    Type = AssetType.FrontCover
-                                }
-                            ]
-                        }
+                        Track = trackInfo.Track.WithMPDAsset()
                     };
                 }
 
@@ -443,4 +432,28 @@ public class Queue(Client client, ITagParser parser, MPDTagParser mpdTagParser, 
             OnStateChanged(flags);
         }
     }
+
+    [LoggerMessage(LogLevel.Error, "Failed to move track")]
+    static partial void LogFailedToMoveTrack(ILogger<Queue> logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to clear queue")]
+    static partial void LogFailedToClearQueue(ILogger<Queue> logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to save queue")]
+    static partial void LogFailedToSaveQueue(ILogger logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to remove track")]
+    static partial void LogFailedToRemoveTrack(ILogger<Queue> logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set shuffle")]
+    static partial void LogFailedToSetShuffle(ILogger logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set repeat")]
+    static partial void LogFailedToSetRepeat(ILogger logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to set consume")]
+    static partial void LogFailedToSetConsume(ILogger logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to play tracks")]
+    static partial void LogFailedToPlayTracks(ILogger<Queue> logger, Exception ex);
 }

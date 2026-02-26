@@ -199,10 +199,7 @@ public partial class AlbumPage
         
         _titleLabel.SetLabel(_album.Title);
         
-        var duration = _album.Tracks.Aggregate(System.TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
-            
-        // TODO: Duration formatting is duplicate. Reuse.
-         
+        var duration = _album.Tracks.Aggregate(TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
         _durationLabel.SetLabel(duration.ToDisplayString());          
     }
 }

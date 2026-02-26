@@ -99,7 +99,7 @@ public partial class AlbumPagePresenter(
         // Reload the album, but without any filters
         if (_album == null)
         {
-            logger.LogWarning("Album was not loaded.");
+            LogAlbumWasNotLoaded(logger);
             return;
         }
         View?.LoadAlbum(_album);
@@ -180,4 +180,7 @@ public partial class AlbumPagePresenter(
 
     [LoggerMessage(LogLevel.Warning, "Could not find track with ID {trackId}")]
     static partial void LogCouldNotFindTrackById(ILogger<AlbumPagePresenter> logger, string trackId);
+
+    [LoggerMessage(LogLevel.Warning, "Album was not loaded.")]
+    static partial void LogAlbumWasNotLoaded(ILogger<AlbumPagePresenter> logger);
 }

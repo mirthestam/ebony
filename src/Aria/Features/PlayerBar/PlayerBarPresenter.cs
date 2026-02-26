@@ -6,7 +6,6 @@ using Aria.Core.Queue;
 using Aria.Features.Shell;
 using Aria.Infrastructure;
 using CommunityToolkit.Mvvm.Messaging;
-using Gdk;
 using Microsoft.Extensions.Logging;
 using Task = System.Threading.Tasks.Task;
 
@@ -18,7 +17,7 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
     private readonly ILogger<PlayerBarPresenter> _logger;
     private readonly IMessenger _messenger;
     private readonly ArtAssetLoader _artAssetLoader;
-    private Art? _currentCoverArt;    
+    private Art? _currentCoverArt;
     private PlayerBar? _view;
 
     private CancellationTokenSource? _coverArtCancellationTokenSource;
@@ -70,11 +69,8 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
     {
         AbortRefreshCover();
 
-        await GtkDispatch.InvokeIdleAsync(() =>
-        {
-            _view?.ClearCoverArt();
-        });
-        
+        await GtkDispatch.InvokeIdleAsync(() => { _view?.ClearCoverArt(); });
+
         _currentCoverArt?.Dispose();
         _currentCoverArt = null;
     }
@@ -85,9 +81,9 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
         {
             await RefreshAsync(message.Value);
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToHandlePlayerStateChange(ex);
         }
     }
 
@@ -97,9 +93,9 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
         {
             await RefreshAsync(message.Value);
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToHandleQueueStateChange(ex);
         }
     }
 
@@ -107,41 +103,32 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
     {
         if (flags.HasFlag(PlayerStateChangedFlags.PlaybackState))
         {
-            await GtkDispatch.InvokeIdleAsync(() => 
-            {
-                _view?.SetPlaybackState(_aria.Player.State);
-            }, cancellationToken);
+            await GtkDispatch.InvokeIdleAsync(() => { _view?.SetPlaybackState(_aria.Player.State); },
+                cancellationToken);
         }
 
         if (flags.HasFlag(PlayerStateChangedFlags.Progress))
         {
-            await GtkDispatch.InvokeIdleAsync(() => 
-            {
-                _view?.SetProgress(_aria.Player.Progress.Elapsed, _aria.Player.Progress.Duration);
-            }, cancellationToken);
+            await GtkDispatch.InvokeIdleAsync(
+                () => { _view?.SetProgress(_aria.Player.Progress.Elapsed, _aria.Player.Progress.Duration); },
+                cancellationToken);
         }
     }
 
     private async Task RefreshAsync(QueueStateChangedFlags flags, CancellationToken cancellationToken = default)
     {
         if (!flags.HasFlag(QueueStateChangedFlags.Id) && !flags.HasFlag(QueueStateChangedFlags.PlaybackOrder)) return;
-        
+
         if (_aria.Queue.Length == 0)
         {
             // The queue has changed and is empty.
-            await GtkDispatch.InvokeIdleAsync(() => 
-            {
-                _view?.SetCurrentTrack(null);
-            }, cancellationToken);
+            await GtkDispatch.InvokeIdleAsync(() => { _view?.SetCurrentTrack(null); }, cancellationToken);
         }
         else
         {
             var track = _aria.Queue.CurrentTrack;
 
-            await GtkDispatch.InvokeIdleAsync(() => 
-            {
-                _view?.SetCurrentTrack(track?.Track);
-            }, cancellationToken);
+            await GtkDispatch.InvokeIdleAsync(() => { _view?.SetCurrentTrack(track?.Track); }, cancellationToken);
         }
 
         await RefreshCoverAsync(cancellationToken);
@@ -169,14 +156,11 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
             var track = _aria.Queue.CurrentTrack;
             if (track == null)
             {
-                await GtkDispatch.InvokeIdleAsync(() =>
-                {
-                    _view?.ClearCoverArt();
-                }, cancellationToken);
-                
+                await GtkDispatch.InvokeIdleAsync(() => { _view?.ClearCoverArt(); }, cancellationToken);
+
                 _currentCoverArt?.Dispose();
                 _currentCoverArt = null;
-                
+
                 return;
             }
 
@@ -188,11 +172,8 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
             var previousCoverArt = _currentCoverArt;
             _currentCoverArt = newCoverArt;
 
-            await GtkDispatch.InvokeIdleAsync(() =>
-            {
-                _view?.LoadCoverArt(newCoverArt);
-            }, cancellationToken);
-            
+            await GtkDispatch.InvokeIdleAsync(() => { _view?.LoadCoverArt(newCoverArt); }, cancellationToken);
+
             previousCoverArt?.Dispose();
         }
         catch (OperationCanceledException)
@@ -210,4 +191,10 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
 
     [LoggerMessage(LogLevel.Error, "Failed to load album cover")]
     partial void LogFailedToLoadAlbumCover(Exception e);
+
+    [LoggerMessage(LogLevel.Error, "Failed to handle player state change")]
+    partial void LogFailedToHandlePlayerStateChange(Exception e);
+
+    [LoggerMessage(LogLevel.Error, "Failed to handle queue state change")]
+    partial void LogFailedToHandleQueueStateChange(Exception e);
 }

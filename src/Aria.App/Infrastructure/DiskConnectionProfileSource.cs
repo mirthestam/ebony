@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Aria.App.Infrastructure;
 
-public class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSource> logger)
+public partial class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSource> logger)
 {
     private static readonly string ProfileDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
@@ -48,7 +48,7 @@ public class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSource> lo
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to load profile from {File}", file);
+                LogFailedToLoadProfileFromFile(logger, e, file);
             }
         }
         return profiles;
@@ -84,4 +84,7 @@ public class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSource> lo
         var path = Path.Combine(ProfileDir, $"{id}.json");
         if (File.Exists(path)) File.Delete(path);
     }
+
+    [LoggerMessage(LogLevel.Error, "Failed to load profile from {file}")]
+    static partial void LogFailedToLoadProfileFromFile(ILogger<DiskConnectionProfileSource> logger, Exception e, string file);
 }

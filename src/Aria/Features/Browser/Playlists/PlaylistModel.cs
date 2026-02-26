@@ -24,7 +24,6 @@ public partial class PlaylistModel : INotifyPropertyChanged
 
         if (playlist.Tracks.Count > 0)
         {
-            // TODO: This should be on playlist Info
             model.CoverArtId = playlist.Tracks[0]
                 .Track.Assets.FirstOrDefault(r => r.Type == AssetType.FrontCover)
                 ?.Id;

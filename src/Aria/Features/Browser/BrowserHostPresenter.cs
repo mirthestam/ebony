@@ -58,9 +58,9 @@ public partial class BrowserHostPresenter : IRootPresenter<BrowserHost>, IRecipi
                 await DeterminePageAsync();
             }
         }
-        catch 
+        catch (Exception ex)
         {
-            // Ok
+            LogFailedToDeterminePageAfterLibraryUpdate(ex);
         }
     }
     
@@ -82,7 +82,6 @@ public partial class BrowserHostPresenter : IRootPresenter<BrowserHost>, IRecipi
         }
         catch (OperationCanceledException)
         {
-            // Ok   
         }
         catch (Exception e)
         {
@@ -99,4 +98,7 @@ public partial class BrowserHostPresenter : IRootPresenter<BrowserHost>, IRecipi
 
     [LoggerMessage(LogLevel.Error, "Failed to load your library")]
     partial void LogCouldNotLoadLibrary(Exception e);
+
+    [LoggerMessage(LogLevel.Error, "Failed to determine page after library update")]
+    partial void LogFailedToDeterminePageAfterLibraryUpdate(Exception ex);
 }

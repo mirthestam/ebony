@@ -1,5 +1,6 @@
 using Aria.Core.Extraction;
 using Aria.Core.Library;
+using Aria.Infrastructure.Palette;
 using Gdk;
 using Microsoft.Extensions.Logging;
 

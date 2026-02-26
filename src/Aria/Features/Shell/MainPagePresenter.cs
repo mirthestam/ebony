@@ -89,7 +89,7 @@ public partial class MainPagePresenter : IRootPresenter<MainPage>, IRecipient<Qu
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            LogFailedToColorizeArtwork(e);           
         }
     }    
     
@@ -220,4 +220,7 @@ public partial class MainPagePresenter : IRootPresenter<MainPage>, IRecipient<Qu
 
     [LoggerMessage(LogLevel.Warning, "Sequence task aborted due to exception.")]
     partial void LogSequenceTaskAbortedDueToException(Exception e);
+
+    [LoggerMessage(LogLevel.Error, "Failed to colorize artwork")]
+    partial void LogFailedToColorizeArtwork(Exception e);
 }

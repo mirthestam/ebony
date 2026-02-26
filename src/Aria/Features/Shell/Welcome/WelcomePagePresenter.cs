@@ -136,9 +136,9 @@ public partial class WelcomePagePresenter(
 
             await RefreshConnectionsAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToRefreshConnectionsAfterDiscovery(logger, ex);
         }
     }
 
@@ -213,7 +213,7 @@ public partial class WelcomePagePresenter(
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            LogFailedToConfigureConnection(logger, e);
         }
     }
 
@@ -247,7 +247,7 @@ public partial class WelcomePagePresenter(
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            LogFailedToCreateNewConnection(logger, e);           
         }
     }
 
@@ -321,4 +321,13 @@ public partial class WelcomePagePresenter(
 
     [LoggerMessage(LogLevel.Debug, "Saving profile {profileId}")]
     static partial void LogSavingProfile(ILogger<WelcomePagePresenter> logger, Guid profileId);
+
+    [LoggerMessage(LogLevel.Error, "Failed to refresh connections after discovery")]
+    static partial void LogFailedToRefreshConnectionsAfterDiscovery(ILogger<WelcomePagePresenter> logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to configure connection")]
+    static partial void LogFailedToConfigureConnection(ILogger<WelcomePagePresenter> logger, Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to create new connection")]
+    static partial void LogFailedToCreateNewConnection(ILogger<WelcomePagePresenter> logger, Exception ex);
 }

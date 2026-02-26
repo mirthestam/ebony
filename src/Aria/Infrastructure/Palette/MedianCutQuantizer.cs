@@ -1,3 +1,5 @@
+namespace Aria.Infrastructure.Palette;
+
 internal static class MedianCutQuantizer
 {
     private const int SIGBITS = 5;

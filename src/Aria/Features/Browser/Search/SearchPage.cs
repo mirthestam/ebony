@@ -5,6 +5,7 @@ using Gdk;
 using GLib;
 using GObject;
 using Gtk;
+using Microsoft.Extensions.Logging;
 
 namespace Aria.Features.Browser.Search;
 
@@ -42,17 +43,15 @@ public partial class SearchPage
         _searchEntry.OnSearchChanged += SearchEntryOnOnSearchChanged;
     }
 
-    private async void OnOnMap(Widget widget, EventArgs eventArgs)
+    private void OnOnMap(Widget widget, EventArgs eventArgs)
     {
-        try
-        {
-            await GtkDispatch.InvokeIdleAsync(() => { _searchEntry.GrabFocus(); });
-        }
-        catch
-        {
-            // OK
-        }
+        _ = SetFocusAsync();
     }
+    
+    private async Task SetFocusAsync()
+    {
+        await GtkDispatch.InvokeIdleAsync(() => { _searchEntry.GrabFocus(); });
+    }    
 
     public void Clear()
     {

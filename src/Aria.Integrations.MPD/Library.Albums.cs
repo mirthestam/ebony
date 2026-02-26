@@ -173,7 +173,7 @@ public partial class Library
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to get album art from MPD");
+            LogFailedToGetAlbumArtFromMPD(logger, e);
         }
 
         // Try to find the art by reading embedded pictures from binary tags (e.g., ID3v2’s APIC tag).
@@ -206,10 +206,13 @@ public partial class Library
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to get album art from MPD");
+            LogFailedToGetAlbumArtFromMPD(logger, e);
         }
 
         // No album art found. Just return the default album art.
         return await GetDefaultAlbumResourceStreamAsync(token);
-    }    
+    }
+
+    [LoggerMessage(LogLevel.Error, "Failed to get album art from MPD")]
+    static partial void LogFailedToGetAlbumArtFromMPD(ILogger<Library> logger, Exception e);
 }

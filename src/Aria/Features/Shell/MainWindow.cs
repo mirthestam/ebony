@@ -95,10 +95,6 @@ public partial class MainWindow
         //   </object>
         // </child>
         
-        // TODO: Refactor the artists list to use rows when in collapsed view. 
-        
-        // TODO: In bottom-page layout, the mini player overlaps the artists sidebar.
-
         var browserBreakpoint = Breakpoint.New(BreakpointCondition.NewLength(BreakpointConditionLengthType.MaxWidth, 860, LengthUnit.Sp));
         browserBreakpoint.AddSetter(MainPage.BrowserHost.BrowserPage.NavigationSplitView, "collapsed", new Value(true));
         AddBreakpoint(browserBreakpoint);

@@ -14,14 +14,14 @@ public partial class AlbumListItem
     [Connect("cover-picture")] private Picture _coverPicture;
     [Connect("subtitle-label")] private Label _subTitleLabel;
     [Connect("title-label")] private Label _titleLabel;
-    
-    [Connect("gesture-click")] GestureClick _gestureClick;
-    [Connect("gesture-long-press")] GestureLongPress _gestureLongPress;
+
+    [Connect("gesture-click")] private GestureClick _gestureClick;
+    [Connect("gesture-long-press")] private GestureLongPress _gestureLongPress;
     [Connect("drag-source")] private DragSource _dragSource;
-    
+
     public GestureClick GestureClick => _gestureClick;
     public GestureLongPress GestureLongPress => _gestureLongPress;
-    
+
     public AlbumModel? Model { get; private set; }
 
     partial void Initialize()
@@ -33,39 +33,31 @@ public partial class AlbumListItem
     public void Bind(AlbumModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
-        
-        try
-        {
-            if (Model != null)
-            {
-                Unbind();
-            }
 
-            Model = model;
-            Model.PropertyChanged += ModelOnPropertyChanged;
-            
-            _titleLabel.SetLabel(model.Title);
-            _subTitleLabel.SetLabel(model.Credits);
-        
-            UpdateCoverPicture();
-        }
-        catch (Exception e)
+        if (Model != null)
         {
-            // TODO: Logger, but this is a list item so i should not expose Album here.
-            Console.WriteLine(e);
+            Unbind();
         }
+
+        Model = model;
+        Model.PropertyChanged += ModelOnPropertyChanged;
+
+        _titleLabel.SetLabel(model.Title);
+        _subTitleLabel.SetLabel(model.Credits);
+
+        UpdateCoverPicture();
     }
 
     public void Unbind()
     {
-        _coverPicture.SetPaintable(null);            
+        _coverPicture.SetPaintable(null);
         Model?.PropertyChanged -= ModelOnPropertyChanged;
         Model = null;
     }
-    
+
     private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(AlbumModel.CoverArt)) return;            
+        if (e.PropertyName != nameof(AlbumModel.CoverArt)) return;
         GtkDispatch.InvokeIdle(UpdateCoverPicture);
     }
 
@@ -73,7 +65,7 @@ public partial class AlbumListItem
     {
         _coverPicture.SetPaintable(Model?.CoverArt?.Paintable);
     }
-    
+
     private static void DragOnOnDragBegin(DragSource sender, DragSource.DragBeginSignalArgs args)
     {
         var widget = (AlbumListItem)sender.GetWidget()!;
@@ -93,12 +85,12 @@ public partial class AlbumListItem
         var dragIcon = DragIcon.GetForDrag(args.Drag);
         dragIcon.SetChild(clamp);
     }
-    
+
     private static ContentProvider DragOnPrepare(DragSource sender, DragSource.PrepareSignalArgs args)
     {
         var widget = (AlbumListItem)sender.GetWidget()!;
         var wrapper = GId.NewForId(widget.Model!.AlbumId);
         var value = new Value(wrapper);
         return ContentProvider.NewForValue(value);
-    }    
+    }
 }

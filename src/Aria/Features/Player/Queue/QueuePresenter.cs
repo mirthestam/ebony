@@ -11,7 +11,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Aria.Features.Player.Queue;
 
-// TODO: When queueing one item, still problem with applyig queue mode.
+// TODO: When queueing one item, still problem with applying queue mode.
 
 public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRecipient<PlayerStateChangedMessage>
 {
@@ -142,7 +142,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Could not update queue");
+            LogCouldNotUpdateQueue(e);
         }
 
     }
@@ -222,7 +222,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         }
         catch (OperationCanceledException)
         {
-            // Ok
+            // Expected when a new cover starts loading
         }
         catch (Exception e)
         {
@@ -234,7 +234,7 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
     
     private async Task ProcessArtworkAsync(IEnumerable<QueueTrackModel> models, CancellationToken ct)
     {
-        _logger.LogDebug("Loading album artwork.");
+        LogLoadingAlbumArtwork();
         var options = new ParallelOptions
         {
             MaxDegreeOfParallelism = 1,
@@ -251,11 +251,11 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
                     await LoadArtForModelAsync(model, token);
                 });
             
-            _logger.LogInformation("Artwork loading completed.");
+            LogArtworkLoadingCompleted();
         }
         catch (OperationCanceledException)
         {
-            _logger.LogInformation("Artwork loading aborted.");
+            LogArtworkLoadingAborted();
         }
     }
 
@@ -273,11 +273,10 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
         }
         catch (OperationCanceledException)
         {
-            // Ok
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Could not load artwork for {Track}", model.TrackId);
+            LogCouldNotLoadArtworkForTrack(e, model.TrackId);
         }
     }
 
@@ -291,5 +290,20 @@ public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRec
     partial void LogCouldNotEnqueue(Exception e);
     
     [LoggerMessage(LogLevel.Error, "Could not move")]
-    partial void LogCouldNotMove(Exception e);    
+    partial void LogCouldNotMove(Exception e);
+
+    [LoggerMessage(LogLevel.Warning, "Could not update queue")]
+    partial void LogCouldNotUpdateQueue(Exception e);
+
+    [LoggerMessage(LogLevel.Debug, "Loading album artwork.")]
+    partial void LogLoadingAlbumArtwork();
+
+    [LoggerMessage(LogLevel.Information, "Artwork loading completed.")]
+    partial void LogArtworkLoadingCompleted();
+
+    [LoggerMessage(LogLevel.Information, "Artwork loading aborted.")]
+    partial void LogArtworkLoadingAborted();
+
+    [LoggerMessage(LogLevel.Warning, "Could not load artwork for {track}")]
+    partial void LogCouldNotLoadArtworkForTrack(Exception e, Id track);
 }

@@ -46,24 +46,5 @@ public partial class SearchPage
     
     private static void AlbumOnOnDragBegin(DragSource sender, DragSource.DragBeginSignalArgs args)
     {
-        // TODO: when album art is available in the album row,
-        // Use the code below to use it as the drag icon.
-        
-        // var widget = (SearchAlbumActionRow)sender.GetWidget()!;
-        // var cover = widget.Model!.CoverTexture;
-        // if (cover == null) return;
-        
-        // var coverPicture = Picture.NewForPaintable(cover);
-        // coverPicture.AddCssClass("cover");
-        // coverPicture.CanShrink = true;
-        // coverPicture.ContentFit = ContentFit.ScaleDown;
-        // coverPicture.AlternativeText = widget.Model.Album.Title;
-        //
-        // var clamp = Clamp.New();
-        // clamp.MaximumSize = 96;
-        // clamp.SetChild(coverPicture);
-        //
-        // var dragIcon = DragIcon.GetForDrag(args.Drag);
-        // dragIcon.SetChild(clamp);
     }    
 }

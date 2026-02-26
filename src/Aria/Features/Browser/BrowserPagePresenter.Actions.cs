@@ -80,9 +80,9 @@ public partial class BrowserPagePresenter
             _messenger.Send(new ShowToastMessage("Your Music Player is refreshing your library."));
             await _aria.Library.BeginRefreshAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToUpdateLibrary(ex);
         }
     }
 
@@ -92,9 +92,9 @@ public partial class BrowserPagePresenter
         {
             await _ariaControl.RunInspectionAsync();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
+            LogFailedToRunLibraryDiagnostics(ex);           
         }
     }
 
@@ -137,7 +137,7 @@ public partial class BrowserPagePresenter
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            LogFailedToShowTrackDetails(e);           
         }
     }
 
@@ -256,9 +256,9 @@ public partial class BrowserPagePresenter
         {
             await ShowAllAlbumsAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToShowAllAlbums(ex);
         }
     }
 
@@ -268,9 +268,9 @@ public partial class BrowserPagePresenter
         {
             await ShowPlaylistsAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToShowPlaylists(ex);
         }
     }    
     
@@ -285,4 +285,19 @@ public partial class BrowserPagePresenter
 
     [LoggerMessage(LogLevel.Debug, "Showing artist details for artist {artistId}")]
     partial void LogShowingArtistDetailsForArtist(Id artistId);
+
+    [LoggerMessage(LogLevel.Error, "Failed to update library")]
+    partial void LogFailedToUpdateLibrary(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to run library diagnostics")]
+    partial void LogFailedToRunLibraryDiagnostics(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to show track details")]
+    partial void LogFailedToShowTrackDetails(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to show all albums")]
+    partial void LogFailedToShowAllAlbums(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to show playlists")]
+    partial void LogFailedToShowPlaylists(Exception ex);
 }

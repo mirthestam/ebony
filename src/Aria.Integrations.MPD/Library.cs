@@ -22,7 +22,7 @@ public partial class Library
     {
         using var scope = await client.CreateConnectionScopeAsync(token: ct);
 
-        logger.LogInformation("Starting library inspection. ");
+        LogStartingLibraryInspection(logger);
         
         // get tracks
         var listAllCommand = new ListAllCommand();
@@ -31,7 +31,6 @@ public partial class Library
         
         foreach (var dir in listAllResponse.Content!)
         {
-            logger.LogDebug("Inspecting directory: " + dir.Name);
             ct.ThrowIfCancellationRequested();
             
             foreach (var file in dir.Files)
@@ -68,8 +67,14 @@ public partial class Library
             }
         }
         
-        logger.LogInformation("Library Inspection completed.");
+        LogLibraryInspectionCompleted(logger);
     }
+
+    [LoggerMessage(LogLevel.Information, "Starting library inspection. ")]
+    static partial void LogStartingLibraryInspection(ILogger<Library> logger);
+
+    [LoggerMessage(LogLevel.Information, "Library Inspection completed.")]
+    static partial void LogLibraryInspectionCompleted(ILogger<Library> logger);
 }
 
 public partial class Library(Client client, ITagParser tagParser, ITagInspector tagInspector, MPDTagParser mpdTagParser, ILogger<Library> logger) : BaseLibrary

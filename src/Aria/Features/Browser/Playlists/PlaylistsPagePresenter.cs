@@ -45,9 +45,9 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
         {
             await _aria.Library.RenamePlaylistAsync(e.PlaylistId, e.PlaylistName);
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToRenamePlaylist(ex);
         }
     }
 
@@ -57,9 +57,9 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
         {
             await _aria.Library.DeletePlaylistAsync(e);
         }
-        catch
+        catch (Exception ex)
         {
-            // OK
+            LogFailedToDeletePlaylist(ex);
         }
     }
 
@@ -70,6 +70,21 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
         await LoadAsync(cancellationToken);
     }
 
+    public async void Receive(LibraryUpdatedMessage message)
+    {
+        try
+        {
+            if (message.Value.HasFlag(LibraryChangedFlags.Playlists))
+            {
+                await RefreshAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            LogFailedToHandleLibraryUpdatedMessage(ex);
+        }
+    }    
+    
     private void AbortAndClear()
     {
         _loadCts?.Cancel();
@@ -109,9 +124,9 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
         catch (OperationCanceledException)
         {
         }
-        catch 
+        catch (Exception ex) 
         {
-            // OK
+            LogFailedToLoadPlaylists(ex);
         }
     }
 
@@ -152,7 +167,6 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
         }
         catch (OperationCanceledException)
         {
-            // Ok
         }
         catch (Exception e)
         {
@@ -162,8 +176,6 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
 
     public async Task ResetAsync()
     {
-        //LogResettingArtistPage();
-
         await GtkDispatch.InvokeIdleAsync(() => { View?.TogglePage(PlaylistsPage.PlaylistsPages.Empty); });
     }
 
@@ -179,18 +191,15 @@ public partial class PlaylistsPagePresenter : IRootPresenter<PlaylistsPage>, IRe
     [LoggerMessage(LogLevel.Debug, "Artwork loading aborted.")]
     partial void LogArtworkLoadingAborted();
 
-    public async void Receive(LibraryUpdatedMessage message)
-    {
-        try
-        {
-            if (message.Value.HasFlag(LibraryChangedFlags.Playlists))
-            {
-                await RefreshAsync();
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-    }
+    [LoggerMessage(LogLevel.Error, "Failed to rename playlist")]
+    partial void LogFailedToRenamePlaylist(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to delete playlist")]
+    partial void LogFailedToDeletePlaylist(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to handle library updated message")]
+    partial void LogFailedToHandleLibraryUpdatedMessage(Exception ex);
+
+    [LoggerMessage(LogLevel.Error, "Failed to load playlists")]
+    partial void LogFailedToLoadPlaylists(Exception ex);
 }

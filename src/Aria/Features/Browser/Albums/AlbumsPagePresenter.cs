@@ -137,7 +137,6 @@ public partial class AlbumsPagePresenter : IRecipient<LibraryUpdatedMessage>
         }
         catch (OperationCanceledException)
         {
-            // Ok
         }
         catch (Exception e)
         {
