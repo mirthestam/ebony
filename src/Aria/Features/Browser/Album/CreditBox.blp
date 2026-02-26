@@ -6,17 +6,55 @@ template $AriaFeaturesBrowserAlbumCreditBox: Box {
   Grid {
     valign: fill;
 
+    Label released-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
+      label: "Released";
+      margin-bottom: 3;
+      margin-top: 3;
+      valign: start;
+      visible: false;
+      xalign: 0;
+
+      layout {
+        column: "0";
+        row: "0";
+      }
+    }
+
+    Box released-box {
+      halign: start;
+      margin-start: 0;
+      margin-top: 0;
+      orientation: vertical;
+      valign: fill;
+      visible: false;
+
+      layout {
+        column: "1";
+        row: "0";
+      }
+    }
+
     Label composers-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
       label: "Composed By";
       margin-bottom: 3;
       margin-top: 3;
       valign: start;
       visible: false;
-      xalign: 1;
+      xalign: 0;
 
       layout {
         column: "0";
-        row: "0";
+        row: "1";
       }
     }
 
@@ -30,47 +68,26 @@ template $AriaFeaturesBrowserAlbumCreditBox: Box {
 
       layout {
         column: "1";
-        row: "0";
-      }
-    }
-
-    Label conductors-label {
-      label: "Conducted By";
-      margin-bottom: 3;
-      margin-top: 3;
-      valign: start;
-      visible: false;
-      xalign: 1;
-
-      layout {
-        column: "0";
-        row: "2";
-      }
-    }
-
-    Box conductors-box {
-      halign: start;
-      margin-top: 0;
-      orientation: vertical;
-      visible: false;
-
-      layout {
-        column: "1";
-        row: "2";
+        row: "1";
       }
     }
 
     Label arranged-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
       label: "Arranged By";
       margin-end: 3;
       margin-top: 3;
       valign: start;
       visible: false;
-      xalign: 1;
+      xalign: 0;
 
       layout {
         column: "0";
-        row: "1";
+        row: "2";
       }
     }
 
@@ -84,49 +101,57 @@ template $AriaFeaturesBrowserAlbumCreditBox: Box {
 
       layout {
         column: "1";
-        row: "1";
+        row: "2";
       }
     }
 
-    Label performers-label {
-      label: "Performed By";
+    Label conductors-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
+      label: "Conducted By";
       margin-bottom: 3;
       margin-top: 3;
       valign: start;
       visible: false;
-      xalign: 1;
+      xalign: 0;
 
       layout {
         column: "0";
-        row: "4";
+        row: "3";
       }
     }
 
-    Box performers-box {
+    Box conductors-box {
       halign: start;
-      margin-start: 0;
       margin-top: 0;
       orientation: vertical;
-      valign: fill;
       visible: false;
 
       layout {
         column: "1";
-        row: "4";
+        row: "3";
       }
     }
 
     Label solists-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
       label: "Solists";
       margin-bottom: 3;
       margin-top: 3;
       valign: start;
       visible: false;
-      xalign: 1;
+      xalign: 0;
 
       layout {
         column: "0";
-        row: "3";
+        row: "4";
       }
     }
 
@@ -140,21 +165,59 @@ template $AriaFeaturesBrowserAlbumCreditBox: Box {
 
       layout {
         column: "1";
-        row: "3";
+        row: "4";
+      }
+    }
+
+    Label performers-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
+      label: "Performed By";
+      margin-bottom: 3;
+      margin-top: 3;
+      valign: start;
+      visible: false;
+      xalign: 0;
+
+      layout {
+        column: "0";
+        row: "5";
+      }
+    }
+
+    Box performers-box {
+      halign: start;
+      margin-start: 0;
+      margin-top: 0;
+      orientation: vertical;
+      valign: fill;
+      visible: false;
+
+      layout {
+        column: "1";
+        row: "5";
       }
     }
 
     Label main-label {
+      css-classes: [
+        "credit-caption",
+        "credit"
+      ];
+
       label: "Featuring";
       margin-bottom: 3;
       margin-top: 3;
       valign: start;
       visible: false;
-      xalign: 1;
+      xalign: 0;
 
       layout {
         column: "0";
-        row: "5";
+        row: "6";
       }
     }
 
@@ -168,7 +231,7 @@ template $AriaFeaturesBrowserAlbumCreditBox: Box {
 
       layout {
         column: "1";
-        row: "5";
+        row: "6";
       }
     }
   }

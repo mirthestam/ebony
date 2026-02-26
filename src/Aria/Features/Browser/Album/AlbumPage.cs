@@ -19,6 +19,7 @@ public partial class AlbumPage
     [Connect("credit-box")] private CreditBox _creditBox;
     
     [Connect("title-label")] private Label _titleLabel;
+    [Connect("duration-label")] private Label _durationLabel;
 
     [Connect("message-listbox")] private ListBox _messageListBox;
     [Connect("filter-message-row")]private ActionRow _filterMessageRow;
@@ -194,7 +195,15 @@ public partial class AlbumPage
         })).ToList();
         
         _creditBox.UpdateTracksCredits(_sharedArtists);
+        _creditBox.UpdateReleasedBox(_album.ReleaseDate);
         
         _titleLabel.SetLabel(_album.Title);
+        
+        var duration = _album.Tracks.Aggregate(System.TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
+            
+        // TODO: Duration formatting is duplicate. Reuse.
+        _durationLabel.SetLabel(duration.TotalHours >= 1
+            ? duration.ToString(@"h\:mm\:ss")
+            : duration.ToString(@"mm\:ss"));          
     }
 }

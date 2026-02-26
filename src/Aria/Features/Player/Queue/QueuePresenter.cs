@@ -11,6 +11,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Aria.Features.Player.Queue;
 
+// TODO: When queueing one item, still problem with applyig queue mode.
+
 public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRecipient<PlayerStateChangedMessage>
 {
     private readonly ILogger<QueuePresenter> _logger;

@@ -10,6 +10,7 @@ template $AriaFeaturesBrowserAlbumTrackGroup: Box {
 
     Box header-box {
       orientation: horizontal;
+      spacing: 9;
 
       Label header-label {
         css-classes: [
@@ -21,6 +22,16 @@ template $AriaFeaturesBrowserAlbumTrackGroup: Box {
         single-line-mode: true;
         valign: fill;
         xalign: 0;
+      }
+
+      Label duration-label {
+        css-classes: [
+          "caption",
+        ];
+
+        tooltip-text: "Duration";
+        xalign: 1;
+        yalign: 0.5;
       }
 
       Adw.SplitButton {

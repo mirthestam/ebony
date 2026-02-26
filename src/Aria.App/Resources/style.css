@@ -20,6 +20,10 @@
     font-weight: normal;
 }
 
+.credit-caption {
+    line-height: normal;
+}
+
 .colorized-main-page {
 
     --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));

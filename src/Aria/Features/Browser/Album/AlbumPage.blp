@@ -48,10 +48,11 @@ template $AriaFeaturesBrowserAlbumAlbumPage: Adw.NavigationPage {
 
                 Box {
                   orientation: horizontal;
+                  spacing: 9;
 
                   Label title-label {
                     css-classes: [
-                      "title-3",
+                      "title-2",
                     ];
 
                     ellipsize: end;
@@ -62,6 +63,16 @@ template $AriaFeaturesBrowserAlbumAlbumPage: Adw.NavigationPage {
                     tooltip-text: bind title-label.label no-sync-create;
                     wrap: true;
                     xalign: 0;
+                  }
+
+                  Label duration-label {
+                    css-classes: [
+                      "caption",
+                    ];
+
+                    tooltip-text: "Duration";
+                    xalign: 1;
+                    yalign: 0.5;
                   }
 
                   Adw.SplitButton enqueue-split-button {

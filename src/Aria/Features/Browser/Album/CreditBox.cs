@@ -12,6 +12,7 @@ namespace Aria.Features.Browser.Album;
 [Template<AssemblyResource>($"ui/{nameof(CreditBox)}.ui")]
 public partial class CreditBox
 {
+    [Connect("released-box")] private Box _releasedBox;    
     [Connect("main-box")] private Box _featuringBox;
     [Connect("composers-box")] private Box _composersBox;
     [Connect("arranged-box")] private Box _arrangedBox;
@@ -19,6 +20,7 @@ public partial class CreditBox
     [Connect("performers-box")] private Box _performersBox;
     [Connect("solists-box")] private Box _solistsBox;
 
+    [Connect("released-label")] private Label _releasedLabel;    
     [Connect("main-label")] private Label _featuringLabel;
     [Connect("composers-label")] private Label _composersLabel;
     [Connect("arranged-label")] private Label _arrangedLabel;
@@ -26,20 +28,46 @@ public partial class CreditBox
     [Connect("performers-label")] private Label _performersLabel;
     [Connect("solists-label")] private Label _solistsLabel;
 
+    public void UpdateReleasedBox(DateTimeOffset? releaseDate)
+    {
+        while (_releasedBox.GetFirstChild() != null)
+        {
+            _releasedBox.Remove(_releasedBox.GetFirstChild()!);
+        }
+
+        if (releaseDate == null)
+        {
+            _releasedLabel.Visible = false;
+            _releasedBox.Visible = false;
+            return;
+        }
+        
+        _releasedLabel.Visible = true;
+        _releasedBox.Visible = true;
+        
+        var button = Button.NewWithLabel(releaseDate.Value.ToString("yyyy"));
+        button.SetCanShrink(true);
+        button.AddCssClass("flat");
+        button.AddCssClass("artist-link");
+        button.AddCssClass("artist-link-common");
+        
+        _releasedBox.Append(button);
+    }
+    
     public void UpdateTracksCredits(IList<TrackArtistInfo> artists)
     {
         // Do not remove Album Artists. In some tagging schemes, all artists are listed there.
         // Therefore, this is not a reliable source to determine whether they have already been shown.
         // A better approach would be to check whether the artists are shared across all tracks on the album.
-        FillArtistBox(_composersBox, _composersLabel, artists, ArtistRoles.Composer);
-        FillArtistBox(_conductorsBox, _conductorsLabel, artists, ArtistRoles.Conductor);
-        FillArtistBox(_arrangedBox, _arrangedLabel, artists, ArtistRoles.Arranger);
-        FillArtistBox(_solistsBox, _solistsLabel, artists, ArtistRoles.Soloist);
-        FillArtistBox(_performersBox, _performersLabel, artists, ArtistRoles.Ensemble | ArtistRoles.Performer);
-        FillArtistBox(_featuringBox, _featuringLabel, artists, ArtistRoles.Unknown, true);
+        FillArtistBox(_composersBox, _composersLabel, artists, ArtistRoles.Composer, "Composer", "Composers");
+        FillArtistBox(_conductorsBox, _conductorsLabel, artists, ArtistRoles.Conductor, "Conductor", "Conductors");
+        FillArtistBox(_arrangedBox, _arrangedLabel, artists, ArtistRoles.Arranger, "Arranger", "Arrangers");
+        FillArtistBox(_solistsBox, _solistsLabel, artists, ArtistRoles.Soloist, "Soloist", "Soloists");
+        FillArtistBox(_performersBox, _performersLabel, artists, ArtistRoles.Ensemble | ArtistRoles.Performer, "Performer", "Performers");
+        FillArtistBox(_featuringBox, _featuringLabel, artists, ArtistRoles.Unknown, "Featuring", "Featuring", true);
     }
 
-    private void FillArtistBox(Box container, Label label, IList<TrackArtistInfo> artists, ArtistRoles roleFilter,
+    private void FillArtistBox(Box container, Label label, IList<TrackArtistInfo> artists, ArtistRoles roleFilter, string single, string plural,
         bool exact = false)
     {
         while (container.GetFirstChild() != null)
@@ -59,6 +87,8 @@ public partial class CreditBox
 
         label.Visible = artistList.Count > 0;
         container.Visible = artistList.Count > 0;
+        
+        label.SetText(artistList.Count == 1 ? single : plural);
 
         const int moreThreshold = 3;
         const int moreMinimum = 3;

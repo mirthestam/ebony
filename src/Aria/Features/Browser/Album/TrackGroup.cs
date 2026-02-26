@@ -3,6 +3,7 @@ using Aria.Infrastructure;
 using GLib;
 using GObject;
 using Gtk;
+using TimeSpan = GLib.TimeSpan;
 
 namespace Aria.Features.Browser.Album;
 
@@ -12,6 +13,7 @@ public partial class TrackGroup
 {
     [Connect("tracks-listbox")] private ListBox _tracksListBox;
     [Connect("header-label")]  private Label _headerLabel;
+    [Connect("duration-label")] private Label _durationlabel;
     [Connect("credit-box")] private CreditBox _creditBox;
     [Connect("header-box")] private Box _headerBox;
     
@@ -32,6 +34,12 @@ public partial class TrackGroup
         private set => _headerLabel.Label_ = value;
     }
     
+    public string? Duration
+    {
+        get => _durationlabel.Label_;
+        private set => _durationlabel.Label_ = value;
+    }    
+    
     partial void Initialize()
     {
         InitializeActions();
@@ -42,12 +50,23 @@ public partial class TrackGroup
     {
         _tracks = tracks;
         _albumSharedArtists = albumSharedArtists;
-        Header = headerText;
-
+        
         if (tracks.Count == 1)
         {
             // Just one track. Header does not make sense
             Header = null;
+            Duration = null;
+        }
+        else
+        {
+            Header = headerText;
+
+            var duration = _tracks.Aggregate(System.TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
+            
+            // TODO: Duration formatting is duplicate. Reuse.
+            Duration = duration.TotalHours >= 1
+                ? duration.ToString(@"h\:mm\:ss")
+                : duration.ToString(@"mm\:ss");            
         }
 
         UpdateHeader();
