@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Aria.Core.Extraction;
 using Aria.Core.Library;
 using Aria.Core.Player;
+using Aria.Features.Browser.Album;
 using Aria.Infrastructure;
 using GObject;
 using Object = GObject.Object;
@@ -49,9 +50,7 @@ public partial class QueueTrackModel : INotifyPropertyChanged
         }
         else
         {
-            DurationText = queueTrack.Track.Duration.TotalHours >= 1
-                ? queueTrack.Track.Duration.ToString(@"h\:mm\:ss")
-                : queueTrack.Track.Duration.ToString(@"mm\:ss");
+            DurationText = queueTrack.Track.Duration.ToDisplayString();
         }
         
         QueueTrackId = queueTrack.Id;

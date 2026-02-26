@@ -202,8 +202,7 @@ public partial class AlbumPage
         var duration = _album.Tracks.Aggregate(System.TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
             
         // TODO: Duration formatting is duplicate. Reuse.
-        _durationLabel.SetLabel(duration.TotalHours >= 1
-            ? duration.ToString(@"h\:mm\:ss")
-            : duration.ToString(@"mm\:ss"));          
+         
+        _durationLabel.SetLabel(duration.ToDisplayString());          
     }
 }

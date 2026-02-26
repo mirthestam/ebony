@@ -1,6 +1,7 @@
 using Aria.Core.Library;
 using Aria.Core.Player;
 using Aria.Core.Queue;
+using Aria.Features.Browser.Album;
 using Aria.Features.Player.Queue;
 using Aria.Infrastructure;
 using Gdk;
@@ -99,7 +100,7 @@ public partial class PlaybackControls
             var timeSpan = TimeSpan.FromSeconds(elapsedSeconds);
 
             // Update the label with the formatted time
-            _elapsedPopoverLabel.Label_ = timeSpan.ToString(@"mm\:ss");
+            _elapsedPopoverLabel.Label_ = timeSpan.ToDisplayString();
 
             // (Re)position the popover
             const int yOffset = 12;
@@ -141,7 +142,7 @@ public partial class PlaybackControls
     
     public void SetProgress(PlaybackProgress progress)
     {
-        _elapsedTimeLabel.Label_ = progress.Elapsed.ToString(@"mm\:ss");
+        _elapsedTimeLabel.Label_ = progress.Elapsed.ToDisplayString();
         
         if (progress.Duration == TimeSpan.Zero)
         {
@@ -160,7 +161,7 @@ public partial class PlaybackControls
             }
 
             _elapsedScale.SetValue(progress.Elapsed.TotalSeconds);
-            _remainingTimeLabel.Label_ =(progress.Duration - progress.Elapsed).ToString(@"mm\:ss");
+            _remainingTimeLabel.Label_ =(progress.Duration - progress.Elapsed).ToDisplayString();
             _techLabel.Label_ = $"{progress.AudioBits}-bit / {progress.AudioSampleRate / 1000.0:F1} kHz";
         }
     }

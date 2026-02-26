@@ -1,5 +1,6 @@
 using Adw;
 using Aria.Core.Library;
+using Aria.Features.Browser.Album;
 using Aria.Infrastructure;
 using GLib;
 using GObject;
@@ -52,7 +53,7 @@ public partial class TrackDetailsDialog
         _albumNameRow.SetActionTargetValue(Variant.NewString(albumInfo.Id.ToString()));
         
         _trackNameRow.SetSubtitle(track.Track.Title);
-        _trackDurationRow.SetSubtitle(track.Track.Duration.ToString(@"mm\:ss"));
+        _trackDurationRow.SetSubtitle(track.Track.Duration.ToDisplayString());
         _trackVolumeRow.SetSubtitle(track.VolumeName ?? "");
         _trackNumberRow.SetSubtitle(track.TrackNumber != null ? track.TrackNumber.Value.ToString() : "");
         _trackGroupRow.SetSubtitle(track.Group?.Header ?? "None");

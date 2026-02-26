@@ -3,7 +3,6 @@ using Aria.Infrastructure;
 using GLib;
 using GObject;
 using Gtk;
-using TimeSpan = GLib.TimeSpan;
 
 namespace Aria.Features.Browser.Album;
 
@@ -63,10 +62,7 @@ public partial class TrackGroup
 
             var duration = _tracks.Aggregate(System.TimeSpan.Zero, (current, t) => current.Add(t.Track.Duration));
             
-            // TODO: Duration formatting is duplicate. Reuse.
-            Duration = duration.TotalHours >= 1
-                ? duration.ToString(@"h\:mm\:ss")
-                : duration.ToString(@"mm\:ss");            
+            Duration = duration.ToDisplayString();
         }
 
         UpdateHeader();
@@ -114,7 +110,7 @@ public partial class TrackGroup
             prefixLabel.WidthChars = 4;
             row.AddPrefix(prefixLabel);
 
-            var suffixLabel = Label.New(track.Duration.ToString(@"mm\:ss"));
+            var suffixLabel = Label.New(track.Duration.ToDisplayString());
             suffixLabel.AddCssClass("numeric");
             suffixLabel.AddCssClass(AdwStyles.Dimmed);
 
