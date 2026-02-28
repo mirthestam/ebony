@@ -1,15 +1,14 @@
 using Aria.Core.Extraction;
 using Aria.Core.Library;
-using Aria.Core.Queue;
 
 namespace Aria.Infrastructure;
 
-/// <summary>
-/// Simple decorator for actual backend instances, providing a fallback when no backend is loaded.
-/// </summary>
 public class LibraryProxy : ILibrarySource
 {
     private ILibrarySource? _innerLibrary;
+    private readonly SemaphoreSlim _artistsLock = new(1, 1);
+    private readonly SemaphoreSlim _albumsLock = new(1, 1);
+    private readonly SemaphoreSlim _playlistsLock = new(1, 1);
 
     public event EventHandler<LibraryChangedEventArgs>? Updated;
     
@@ -18,39 +17,93 @@ public class LibraryProxy : ILibrarySource
         return _innerLibrary?.InspectLibraryAsync(ct) ?? Task.CompletedTask;
     }
 
-    public Task<IEnumerable<ArtistInfo>> GetArtistsAsync(ArtistQuery query, CancellationToken cancellationToken = default)
+    public async Task<ArtistInfo?> GetArtistAsync(Id artistId, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetArtistsAsync(query, cancellationToken) ?? Task.FromResult<IEnumerable<ArtistInfo>>([]);
+        await _artistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return null;
+            return await _innerLibrary.GetArtistAsync(artistId, cancellationToken);
+        }
+        finally
+        {
+            _artistsLock.Release();
+        }
     }
 
-    public Task<ArtistInfo?> GetArtistAsync(Id artistId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ArtistInfo>> GetArtistsAsync(ArtistQuery query, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetArtistAsync(artistId, cancellationToken) ?? Task.FromResult<ArtistInfo?>(null);
+        await _artistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return [];
+            return await _innerLibrary.GetArtistsAsync(query, cancellationToken);
+        }
+        finally
+        {
+            _artistsLock.Release();
+        }
     }
 
-    public Task<IEnumerable<ArtistInfo>> GetArtistsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ArtistInfo>> GetArtistsAsync(CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetArtistsAsync(cancellationToken) ?? Task.FromResult<IEnumerable<ArtistInfo>>([]);
+        await _artistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return [];
+            return await _innerLibrary.GetArtistsAsync(cancellationToken);
+        }
+        finally
+        {
+            _artistsLock.Release();
+        }
     }
 
-    public Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetAlbumsAsync(cancellationToken) ?? Task.FromResult<IEnumerable<AlbumInfo>>([]);
+        await _albumsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return [];
+            return await _innerLibrary.GetAlbumsAsync(cancellationToken);
+        }
+        finally
+        {
+            _albumsLock.Release();
+        }
     }
 
-    public Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(Id artistId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(Id artistId, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetAlbumsAsync(artistId, cancellationToken) ?? Task.FromResult<IEnumerable<AlbumInfo>>([]); 
+        await _albumsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return [];
+            return await _innerLibrary.GetAlbumsAsync(artistId, cancellationToken); 
+        }
+        finally
+        {
+            _albumsLock.Release();
+        }
     }
 
-    public Task<Stream> GetAlbumResourceStreamAsync(Id resourceId, CancellationToken token)
+    public Task<Stream> GetAlbumResourceStreamAsync(Id assetId, CancellationToken token)
     {
-        return _innerLibrary?.GetAlbumResourceStreamAsync(resourceId, token) ?? Task.FromResult(Stream.Null);
+        return _innerLibrary?.GetAlbumResourceStreamAsync(assetId, token) ?? Task.FromResult(Stream.Null);
     }
 
-    public Task<AlbumInfo?> GetAlbumAsync(Id albumId, CancellationToken cancellationToken = default)
+    public async Task<AlbumInfo?> GetAlbumAsync(Id albumId, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetAlbumAsync(albumId, cancellationToken) ?? Task.FromResult<AlbumInfo?>(null);
+        await _albumsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return null;
+            return await _innerLibrary.GetAlbumAsync(albumId, cancellationToken);
+        }
+        finally
+        {
+            _albumsLock.Release();
+        }
     }
 
     public Task<SearchResults> SearchAsync(string query, CancellationToken cancellationToken = default)
@@ -58,14 +111,32 @@ public class LibraryProxy : ILibrarySource
         return _innerLibrary?.SearchAsync(query, cancellationToken) ?? Task.FromResult(new SearchResults());
     }
 
-    public Task<IEnumerable<PlaylistInfo>> GetPlaylistsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PlaylistInfo>> GetPlaylistsAsync(CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetPlaylistsAsync(cancellationToken) ?? Task.FromResult<IEnumerable<PlaylistInfo>>([]);
+        await _playlistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return [];
+            return await _innerLibrary.GetPlaylistsAsync(cancellationToken);
+        }
+        finally
+        {
+            _playlistsLock.Release();
+        }
     }
 
-    public Task<PlaylistInfo?> GetPlaylistAsync(Id playlistId, CancellationToken cancellationToken = default)
+    public async Task<PlaylistInfo?> GetPlaylistAsync(Id playlistId, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.GetPlaylistAsync(playlistId, cancellationToken) ?? Task.FromResult<PlaylistInfo?>(null);
+        await _playlistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary == null) return null;
+            return await _innerLibrary.GetPlaylistAsync(playlistId, cancellationToken);
+        }
+        finally
+        {
+            _playlistsLock.Release();
+        }
     }
 
     public Task<Info?> GetItemAsync(Id id, CancellationToken cancellationToken = default)
@@ -73,14 +144,32 @@ public class LibraryProxy : ILibrarySource
         return _innerLibrary?.GetItemAsync(id, cancellationToken) ?? Task.FromResult<Info?>(null);
     }
 
-    public Task DeletePlaylistAsync(Id id, CancellationToken cancellationToken = default)
+    public async Task DeletePlaylistAsync(Id id, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.DeletePlaylistAsync(id, cancellationToken) ?? Task.CompletedTask;
+        await _playlistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary != null)
+                await _innerLibrary.DeletePlaylistAsync(id, cancellationToken);
+        }
+        finally
+        {
+            _playlistsLock.Release();
+        }
     }
 
-    public Task RenamePlaylistAsync(Id id, string newName, CancellationToken cancellationToken = default)
+    public async Task RenamePlaylistAsync(Id id, string newName, CancellationToken cancellationToken = default)
     {
-        return _innerLibrary?.RenamePlaylistAsync(id, newName, cancellationToken) ?? Task.CompletedTask;
+        await _playlistsLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_innerLibrary != null)
+                await _innerLibrary.RenamePlaylistAsync(id, newName, cancellationToken);
+        }
+        finally
+        {
+            _playlistsLock.Release();
+        }
     }
 
     public Task BeginRefreshAsync()

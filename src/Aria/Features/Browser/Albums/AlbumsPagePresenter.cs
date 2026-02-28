@@ -58,7 +58,7 @@ public partial class AlbumsPagePresenter : IRecipient<LibraryUpdatedMessage>
 
     public void Receive(LibraryUpdatedMessage message)
     {
-        if (message.Value.HasFlag(LibraryChangedFlags.Library))
+        if (message.Value.HasFlag(LibraryChangedFlags.Albums))
         {
             _ = LoadAsync();
         }

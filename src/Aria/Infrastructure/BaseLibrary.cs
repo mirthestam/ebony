@@ -1,11 +1,14 @@
 using Aria.Core.Extraction;
 using Aria.Core.Library;
-using Aria.Core.Queue;
+using Aria.Infrastructure.Caching;
+using Microsoft.Extensions.Logging;
 
 namespace Aria.Infrastructure;
 
-public abstract class BaseLibrary : ILibrarySource 
+public abstract class BaseLibrary(IAlbumArtCache albumArtCache, ILogger? logger = null) : ILibrarySource
 {
+    private ILogger? Logger { get; } = logger;
+    
     public virtual event EventHandler<LibraryChangedEventArgs>? Updated;
     public abstract Task InspectLibraryAsync(CancellationToken ct = default);
     public abstract Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(CancellationToken cancellationToken = default);
@@ -29,12 +32,52 @@ public abstract class BaseLibrary : ILibrarySource
 
     public virtual Task BeginRefreshAsync() => Task.CompletedTask;
 
-    public virtual async Task<Stream> GetAlbumResourceStreamAsync(Id id, CancellationToken ct)
+    public async Task<Stream> GetAlbumResourceStreamAsync(Id assetId, CancellationToken ct)
     {
+        if (assetId == Id.Empty)
+        {
+            return await GetDefaultAlbumResourceStreamAsync(ct).ConfigureAwait(false);
+        }
+
+        try
+        {
+            // Check if we already know this item (either cached or previously failed)
+            if (!albumArtCache.Contains(assetId))
+            {
+                // Try to retrieve this item from the backend
+                var backendStream = await GetAlbumResourceFromBackend(assetId, ct);
+                if (backendStream == null)
+                {
+                    // The cache will remember the failed attempt.
+                    // This way, we make sure we won't retry every restart of the application
+                    albumArtCache.MarkFailed(assetId);
+                    return await GetDefaultAlbumResourceStreamAsync(ct).ConfigureAwait(false);
+                }
+
+                // Save it to the cache
+                var cacheStream = await albumArtCache.CreateThumbnailAndCacheStream(assetId, backendStream, ct);
+                if (cacheStream != null) return cacheStream;
+            }
+            
+            // Try cache (might have been populated by another thread)
+            var cachedStream = albumArtCache.GetAlbumResourceStream(assetId);
+            if (cachedStream != null) return cachedStream;
+        }
+        catch (OperationCanceledException)
+        {
+            
+        }
+        catch (Exception e)
+        {
+            Logger?.LogError(e, "Failed to get album art for {Id}", assetId);
+        }
+        
         return await GetDefaultAlbumResourceStreamAsync(ct).ConfigureAwait(false);
     }
-    
-    protected static async Task<Stream> GetDefaultAlbumResourceStreamAsync(CancellationToken ct = default)
+
+    protected abstract Task<Stream?> GetAlbumResourceFromBackend(Id id, CancellationToken ct);
+
+    private static async Task<Stream> GetDefaultAlbumResourceStreamAsync(CancellationToken ct = default)
     {
         var assembly = typeof(BaseLibrary).Assembly;
 

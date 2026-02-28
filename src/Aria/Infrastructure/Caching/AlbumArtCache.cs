@@ -1,102 +1,42 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
+using Aria.Core.Connection;
 using Aria.Core.Extraction;
-using Aria.Core.Library;
-using Aria.Core.Queue;
-using GdkPixbuf;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Aria.Infrastructure.Caching;
 
-public sealed partial class ResourceCacheLibrarySource : ILibrarySource
+public sealed partial class AlbumArtCache : IAlbumArtCache
 {
-    private readonly ILibrarySource _innerLibrary;
+    private const string FailedSuffix = ".failed";
+    
     private readonly string _cacheDir;
-    private readonly TimeSpan? _ttl;
-    private readonly ILogger<ResourceCacheLibrarySource> _logger;
-
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _gates = new();
-
-    public ResourceCacheLibrarySource(
-        ILibrarySource innerLibrary,
-        string connectionScopeKey,
-        TimeSpan? ttl = null)
+    
+    private readonly TimeSpan? _ttl = TimeSpan.FromDays(30);
+    private readonly IThumbnailTool _thumbnailTool;
+    private readonly ILogger<AlbumArtCache> _logger;
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
+    
+    public AlbumArtCache(ConnectionContext connectionContext, IThumbnailTool thumbnailTool, ILogger<AlbumArtCache> logger)
     {
-        // TODO: Inject a real logger here
-        _logger = NullLogger<ResourceCacheLibrarySource>.Instance;
-
-        _innerLibrary = innerLibrary ?? throw new ArgumentNullException(nameof(innerLibrary));
-        _ttl = ttl;
+        _thumbnailTool = thumbnailTool;
+        _logger = logger;
 
         var baseCacheDir =
             Environment.GetEnvironmentVariable("XDG_CACHE_HOME")
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".cache");
 
-        _cacheDir = Path.Combine(baseCacheDir, "aria", "album-res", Sanitize(connectionScopeKey));
+        _cacheDir = Path.Combine(baseCacheDir, "aria", Sanitize(connectionContext.Profile.Id.ToString()), "album-art");
         Directory.CreateDirectory(_cacheDir);
-
-        LogCacheInitialized(_cacheDir, _ttl?.ToString() ?? "<none>");
-
-        // Best-effort cleanup of stale tmp files from previous crashes
+        
         TryCleanupTmpFiles();
     }
-
-    public Task<IEnumerable<ArtistInfo>> GetArtistsAsync(CancellationToken cancellationToken = default)
-        => _innerLibrary.GetArtistsAsync(cancellationToken);
-
-    public Task<IEnumerable<ArtistInfo>> GetArtistsAsync(ArtistQuery query,
-        CancellationToken cancellationToken = default) => _innerLibrary.GetArtistsAsync(query, cancellationToken);
-
-    public Task<ArtistInfo?> GetArtistAsync(Id artistId, CancellationToken cancellationToken = default)
-        => _innerLibrary.GetArtistAsync(artistId, cancellationToken);
-
-    public Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(CancellationToken cancellationToken = default)
-        => _innerLibrary.GetAlbumsAsync(cancellationToken);
-
-    public Task<IEnumerable<AlbumInfo>> GetAlbumsAsync(Id artistId, CancellationToken cancellationToken = default)
-        => _innerLibrary.GetAlbumsAsync(artistId, cancellationToken);
-
-    public Task<AlbumInfo?> GetAlbumAsync(Id albumId, CancellationToken cancellationToken = default) =>
-        _innerLibrary.GetAlbumAsync(albumId, cancellationToken);
-
-    public Task<SearchResults> SearchAsync(string query, CancellationToken cancellationToken = default) =>
-        _innerLibrary.SearchAsync(query, cancellationToken);
-
-    public Task<IEnumerable<PlaylistInfo>> GetPlaylistsAsync(CancellationToken cancellationToken = default)
+    
+    public Stream? GetAlbumResourceStream(Id resourceId)
     {
-        return _innerLibrary.GetPlaylistsAsync(cancellationToken);
-    }
-
-    public Task<PlaylistInfo?> GetPlaylistAsync(Id playlistId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Info?> GetItemAsync(Id id, CancellationToken cancellationToken = default) =>
-        _innerLibrary.GetItemAsync(id, cancellationToken);
-
-    public Task DeletePlaylistAsync(Id id, CancellationToken cancellationToken = default)
-    {
-        return _innerLibrary.DeletePlaylistAsync(id, cancellationToken);
-    }
-
-    public Task RenamePlaylistAsync(Id id, string newName, CancellationToken cancellationToken = default)
-    {
-        return _innerLibrary.RenamePlaylistAsync(id, newName, cancellationToken);
-    }
-
-    public Task BeginRefreshAsync()
-    {
-        return _innerLibrary.BeginRefreshAsync();
-    }
-
-    public async Task<Stream> GetAlbumResourceStreamAsync(Id resourceId, CancellationToken cancellationToken = default)
-    {
-        var key = resourceId.ToString();
-        var fileName = Path.Combine(_cacheDir, Sha256Hex(key) + ".bin");
-
+        var fileName = ComposeFilename(resourceId);
+        
         if (TryOpenIfValid(fileName, out var cachedStream))
         {
             LogCacheHit(resourceId, fileName);
@@ -105,19 +45,53 @@ public sealed partial class ResourceCacheLibrarySource : ILibrarySource
 
         LogCacheMiss(resourceId);
 
-        var gate = _gates.GetOrAdd(fileName, _ => new SemaphoreSlim(1, 1));
-        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        return null;
+    }
+    public bool Contains(Id resourceId)
+    {
+        var fileName = ComposeFilename(resourceId);
+        
+        // Known if either the cached file exists OR the failure marker exists
+        return File.Exists(fileName) || File.Exists(fileName + FailedSuffix);
+    }
 
+    public void MarkFailed(Id resourceId)
+    {
+        var fileName = ComposeFilename(resourceId);
+        var failedFile = fileName + FailedSuffix;
+        
         try
         {
-            if (TryOpenIfValid(fileName, out cachedStream))
+            File.WriteAllText(failedFile, DateTime.UtcNow.ToString("O"));
+        }
+        catch (Exception e)
+        {
+            LogDeleteFailed(e, failedFile);
+        }
+    }
+
+    private string ComposeFilename(Id resourceId)
+    {
+        var key = resourceId.ToString();
+        return Path.Combine(_cacheDir, Sha256Hex(key) + ".bin");        
+    }
+    
+    public async Task<Stream?> CreateThumbnailAndCacheStream(Id resourceId, Stream sourceStream,  CancellationToken cancellationToken = default)
+    {
+        var fileName = ComposeFilename(resourceId);
+
+        // Get or create a lock for this specific resource
+        var gate = _locks.GetOrAdd(fileName, _ => new SemaphoreSlim(1, 1));
+
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            // Check if another thread already cached it while we were waiting
+            if (TryOpenIfValid(fileName, out var existingStream))
             {
                 LogCacheHit(resourceId, fileName);
-                return cachedStream;
+                return existingStream;
             }
-
-            await using var stream =
-                await _innerLibrary.GetAlbumResourceStreamAsync(resourceId, cancellationToken).ConfigureAwait(false);
 
             var tmp = fileName + ".tmp";
             long bytesWritten;
@@ -130,14 +104,14 @@ public sealed partial class ResourceCacheLibrarySource : ILibrarySource
                              bufferSize: 64 * 1024,
                              useAsync: true))
             {
-                await stream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
+                await sourceStream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
                 bytesWritten = fs.Length;
             }
 
             try
             {
                 TryDelete(fileName);
-                if (!TryCreateThumbnailPng(await File.ReadAllBytesAsync(tmp, cancellationToken), 256, 256, fileName))
+                if (!_thumbnailTool.TryCreateThumbnailPng(await File.ReadAllBytesAsync(tmp, cancellationToken), 256, 256, fileName))
                 {
                     throw new Exception("Failed to create thumbnail");
                 }
@@ -152,41 +126,23 @@ public sealed partial class ResourceCacheLibrarySource : ILibrarySource
             }
             finally
             {
-                TryDelete(tmp);                
+                TryDelete(tmp);
             }
 
-            return new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 64 * 1024,
-                useAsync: true);
+            return GetAlbumResourceStream(resourceId);
         }
         finally
         {
             gate.Release();
+
+            // Cleanup: remove lock if no one is waiting
+            if (gate.CurrentCount == 1)
+            {
+                _locks.TryRemove(fileName, out _);
+            }
         }
     }
 
-    private static bool TryCreateThumbnailPng(byte[] inputBytes, int maxWidth, int maxHeight, string fileName)
-    {
-        try
-        {
-            using var loader = PixbufLoader.NewWithProperties([]);
-                
-            loader.Write(inputBytes);
-            loader.Close();
-            
-            var pixelBuffer = loader.GetPixbuf();
-            if (pixelBuffer == null) return false;
-            
-            if (pixelBuffer.Width <= 0 || pixelBuffer.Height <= 0) return false;
-            
-            var scaledPixelBuffer = pixelBuffer.ScaleSimple(maxWidth, maxHeight, InterpType.Bilinear);
-            return scaledPixelBuffer != null && scaledPixelBuffer.Savev(fileName, "png", [], []);
-        }
-        catch
-        {
-            return false;
-        }
-    }    
-    
     private bool TryOpenIfValid(string fileName, out Stream stream)
     {
         stream = Stream.Null;
@@ -271,18 +227,6 @@ public sealed partial class ResourceCacheLibrarySource : ILibrarySource
             return false;
         }
     }
-
-    public event EventHandler<LibraryChangedEventArgs>? Updated
-    {
-        add => _innerLibrary.Updated += value;
-        remove => _innerLibrary.Updated -= value;
-    }
-
-    public Task InspectLibraryAsync(CancellationToken ct = default)
-    {
-        return _innerLibrary.InspectLibraryAsync(ct);
-    }
-
     [LoggerMessage(LogLevel.Information, "Album resource cache initialized at '{cacheDir}', TTL={ttl}")]
     private partial void LogCacheInitialized(string cacheDir, string ttl);
 

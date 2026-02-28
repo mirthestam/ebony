@@ -61,14 +61,12 @@ public partial class Player
     public void LoadCoverArt(Art art)
     {
         _playbackControls.SetCoverArt(art);
-        _coverPicture.Visible = true;
         _coverPicture.SetPaintable(art.Paintable);
     }
 
     public void ClearCoverArt()
     {
         _playbackControls.SetCoverArt(null);        
-        _coverPicture.Visible = false;
         _coverPicture.SetPaintable(null);
     }
 
@@ -99,10 +97,15 @@ public partial class Player
 
     public void SetQueueMode(QueueMode queueMode)
     {
-        _coverArtRevealer.RevealChild = queueMode switch
+        var reveal =queueMode switch
         {
             QueueMode.SingleAlbum => true,
             _ => false
         };
+        
+        if (_coverArtRevealer.ChildRevealed != reveal)
+        {
+            _coverArtRevealer.SetRevealChild(reveal);
+        }
     }
 }

@@ -73,8 +73,8 @@ public sealed partial class ConnectionScope : IDisposable
 
     [LoggerMessage(LogLevel.Trace, "Connection scope created")]
     partial void LogConnectionScopeCreated();
-
-    [LoggerMessage(LogLevel.Debug, "Sending: {command}")]
+    
+    [LoggerMessage(LogLevel.Information, "Sending: {command}")]
     partial void LogSendingCommandCommand(string command);
 
     [LoggerMessage(LogLevel.Trace, "Connection scope disposed")]

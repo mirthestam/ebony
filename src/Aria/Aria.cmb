@@ -42,6 +42,7 @@
   <ui template-class="AriaFeaturesPlayerQueueSaveQueueDialog" filename="Features/Player/Queue/SaveQueueDialog.blp" sha256="525b1c84803ad8782f4645b620f2a1d965ba6a1cf2e30cd28db8253e580d449b"/>
   <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage" filename="Features/Browser/Playlists/PlaylistsEmptyPage.blp" sha256="210032aec357b779053cb857856b42332361160502218cb2b0f7630799c96a5c"/>
   <ui template-class="AriaFeaturesPlayerQueueTrackListItem" filename="Features/Player/Queue/TrackListItem.blp" sha256="d88684d555eb6955edc6783d1f692dd8bd7ecd6dd8062b6b6d2a91886a83e513"/>
+  <ui template-class="AriaFeaturesBrowserAlbumCreditBox" filename="Features/Browser/Album/CreditBox.blp" sha256="d665c8b16addf8fb6cca79f0bedd68210821e51f25bc797142f583b6de4ade6a"/>
   <ui template-class="AriaFeaturesPlayerBarPlayerBar" filename="Features/PlayerBar/PlayerBar.blp" sha256="1eeece751365c9420565719d5bd7afa2dda17e4f436da678e8ae84e888a4cf39">
     <requires>AriaFeaturesPlayerMediaControls</requires>
   </ui>
@@ -55,15 +56,15 @@
     <requires>AriaFeaturesBrowserArtistEmptyPage</requires>
     <requires>AriaFeaturesBrowserSharedAlbumsGrid</requires>
   </ui>
+  <ui template-class="AriaFeaturesPlayerPlaybackControls" filename="Features/Player/PlaybackControls.blp" sha256="c417f56cc5495043c295519d58a21abfa287e2175232dac19e352818a871db77">
+    <requires>AriaFeaturesPlayerQueueTrackListItem</requires>
+    <requires>AriaFeaturesPlayerMediaControls</requires>
+  </ui>
   <ui template-class="AriaFeaturesBrowserAlbumTrackGroup" filename="Features/Browser/Album/TrackGroup.blp" sha256="c878f78e35b8cba2a234fd6d761af2919a889f4a0e6516383a4ec4335fd1ddc0">
     <requires>AriaFeaturesBrowserAlbumCreditBox</requires>
   </ui>
   <ui template-class="AriaFeaturesBrowserAlbumAlbumPage" filename="Features/Browser/Album/AlbumPage.blp" sha256="b39c293f09f642dcfc3e8a95e0886637ccd4deffea74873b8920485a0444114f">
     <requires>AriaFeaturesBrowserAlbumCreditBox</requires>
-  </ui>
-  <ui template-class="AriaFeaturesPlayerPlaybackControls" filename="Features/Player/PlaybackControls.blp" sha256="c417f56cc5495043c295519d58a21abfa287e2175232dac19e352818a871db77">
-    <requires>AriaFeaturesPlayerQueueTrackListItem</requires>
-    <requires>AriaFeaturesPlayerMediaControls</requires>
   </ui>
   <ui template-class="AriaFeaturesBrowserBrowserPage" filename="Features/Browser/BrowserPage.blp" sha256="f3cefd243cfc01baee9147215de75fa7a8372950492f3b411e3c559e010c259c">
     <requires>AriaFeaturesBrowserArtistArtistPage</requires>
@@ -71,10 +72,6 @@
     <requires>AriaFeaturesBrowserPlaylistsPlaylistsPage</requires>
     <requires>AriaFeaturesBrowserArtistsArtistsPage</requires>
     <requires>AriaFeaturesBrowserSearchSearchPage</requires>
-  </ui>
-  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp" sha256="ad9b7b5bafc7814725dd5347888d69375b04a4be829152b1fcfad07a9a6cc406">
-    <requires>AriaFeaturesPlayerQueueQueue</requires>
-    <requires>AriaFeaturesPlayerPlaybackControls</requires>
   </ui>
   <ui template-class="AriaFeaturesShellMainPage" filename="Features/Shell/MainPage.blp" sha256="58341cf9e039b696cd1ff748239bfb87738ab370fc49f7e2b798c0a1a4f130db">
     <requires>AriaFeaturesPlayerBarPlayerBar</requires>
@@ -86,5 +83,8 @@
     <requires>AriaFeaturesShellWelcomeWelcomePage</requires>
     <requires>AriaFeaturesShellConnectingPage</requires>
   </ui>
-  <ui template-class="AriaFeaturesBrowserAlbumCreditBox" filename="Features/Browser/Album/CreditBox.blp"/>
+  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp">
+    <requires>AriaFeaturesPlayerQueueQueue</requires>
+    <requires>AriaFeaturesPlayerPlaybackControls</requires>
+  </ui>
 </cambalache-project>

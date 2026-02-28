@@ -23,6 +23,7 @@ using Aria.Features.Shell.Welcome;
 using Aria.Hosting;
 using Aria.Hosting.Extensions;
 using Aria.Infrastructure;
+using Aria.Infrastructure.Caching;
 using Aria.Infrastructure.Extraction;
 using Aria.Infrastructure.Inspection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -49,7 +50,7 @@ public class Program
         return Host.CreateDefaultBuilder(args)
             .ConfigureLogging(logging =>
             {
-                logging.SetMinimumLevel(LogLevel.Debug);
+                logging.SetMinimumLevel(LogLevel.Information);
                 logging.AddSimpleConsole(options =>
                 {
                     options.TimestampFormat = "[HH:mm:ss] ";
@@ -68,9 +69,14 @@ public class Program
                 x.AddSingleton<IAriaControl>(sp => sp.GetRequiredService<AriaEngine>());
                 x.AddSingleton<IAria>(sp => sp.GetRequiredService<AriaEngine>());
                 x.AddSingleton<ILibrary>(sp => sp.GetRequiredService<IAria>().Library);
+                x.AddScoped<ConnectionContext>();
+                x.AddScoped<ILibraryCache, LibraryCache>();                
+                x.AddScoped<IAlbumArtCache, AlbumArtCache>();
+                x.AddScoped<IThumbnailTool, ThumbnailTool>();
+                x.AddScoped<ArtAssetLoader>();                
                 
                 x.AddSingleton<IConnectionProfileProvider, ConnectionProfileProvider>();
-                x.AddSingleton<ArtAssetLoader>();
+                
                 x.AddTransient<ITagParser, PicardTagParser>();
                 x.AddTransient<ITagInspector, PicardTagInspector>();
                 x.AddSingleton<IPresenterFactory, PresenterFactory>();

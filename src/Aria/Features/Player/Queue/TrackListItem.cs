@@ -80,22 +80,37 @@ public partial class TrackListItem
         parent?.AddCssClass("playing");
     }
 
-    private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(QueueTrackModel.Playing))
+        try
         {
-            GtkDispatch.InvokeIdle(UpdatePlaying);
+            if (e.PropertyName == nameof(QueueTrackModel.Playing))
+            {
+                await GtkDispatch.InvokeIdleAsync(UpdatePlaying);
+            }
+
+            if (e.PropertyName != nameof(QueueTrackModel.CoverArt)) return;
+            await GtkDispatch.InvokeIdleAsync(UpdateCoverPicture);
+        }
+        catch (Exception)
+        {
+             // TODO: Log
         }
 
-        if (e.PropertyName != nameof(QueueTrackModel.CoverArt)) return;
-        GtkDispatch.InvokeIdle(UpdateCoverPicture);
     }
 
-    private void QueueOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void QueueOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(QueueModel.Mode))
+        try
         {
-            GtkDispatch.InvokeIdle(UpdateCoverArtRevealer);
+            if (e.PropertyName == nameof(QueueModel.Mode))
+            {
+                await GtkDispatch.InvokeIdleAsync(UpdateCoverArtRevealer);
+            }
+        }
+        catch (Exception)
+        {
+            // TODO: Log
         }
     }
 }

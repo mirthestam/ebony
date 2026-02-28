@@ -36,7 +36,8 @@ public partial class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSo
                         Socket = mpdData.Socket,
                         Host = mpdData.Host,
                         Port = mpdData.Port,
-                        Password = mpdData.Password
+                        Password = mpdData.Password,
+                        LastDbUpdate = mpdData.LastDbUpdate
                     },
                     _ => null
                 };
@@ -69,7 +70,8 @@ public partial class DiskConnectionProfileSource(ILogger<DiskConnectionProfileSo
                 Socket = mpd.Socket,
                 Host = mpd.Host,
                 Port = mpd.Port,
-                Password = mpd.Password
+                Password = mpd.Password,
+                LastDbUpdate = mpd.LastDbUpdate
             },
             _ => throw new NotSupportedException($"Profile type {profile.GetType()} is not supported for disk storage.")
         };

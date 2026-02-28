@@ -1,19 +1,19 @@
+using Aria.Core;
 using Aria.Core.Extraction;
-using Aria.Core.Library;
 using Aria.Infrastructure.Palette;
 using Gdk;
 using Microsoft.Extensions.Logging;
 
 namespace Aria.Infrastructure;
 
-public partial class ArtAssetLoader(ILogger<ArtAssetLoader> logger, ILibrary library)
+public partial class ArtAssetLoader(ILogger<ArtAssetLoader> logger, IAria aria)
 {
     public async Task<Art?> LoadFromAssetAsync(Id assetId, CancellationToken cancellationToken = default)
     {
         using var pixelBufferLoader = GdkPixbuf.PixbufLoader.NewWithProperties([]);
         try
         {
-            await using var stream = await library.GetAlbumResourceStreamAsync(assetId, cancellationToken)
+            await using var stream = await aria.Library.GetAlbumResourceStreamAsync(assetId, cancellationToken)
                 .ConfigureAwait(false);
             if (stream == Stream.Null)
             {

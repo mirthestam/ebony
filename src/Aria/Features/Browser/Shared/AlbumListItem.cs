@@ -55,10 +55,17 @@ public partial class AlbumListItem
         Model = null;
     }
 
-    private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(AlbumModel.CoverArt)) return;
-        GtkDispatch.InvokeIdle(UpdateCoverPicture);
+        try
+        {
+            if (e.PropertyName != nameof(AlbumModel.CoverArt)) return;
+            await GtkDispatch.InvokeIdleAsync(UpdateCoverPicture);
+        }
+        catch (Exception)
+        {
+            // TODO: Log
+        }
     }
 
     private void UpdateCoverPicture()

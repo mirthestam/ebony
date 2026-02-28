@@ -44,32 +44,39 @@ public partial class MainWindowPresenter : IRecipient<ShowToastMessage>
         _ariaControl.StateChanged += AriaControlOnStateChanged;
     }
 
-    private void AriaControlOnStateChanged(object? sender, EngineStateChangedEventArgs e)
+    private async void AriaControlOnStateChanged(object? sender, EngineStateChangedEventArgs e)
     {
-        GtkDispatch.InvokeIdle(() =>
+        try
         {
-            switch (e.State)
+            await GtkDispatch.InvokeIdleAsync(() =>
             {
-                case EngineState.Stopped:
-                    View.TogglePage(MainWindow.MainPages.Welcome);
-                    _ = _welcomePagePresenter.RefreshAsync();
-                    break;
-                case EngineState.Starting:
-                    View.TogglePage(MainWindow.MainPages.Connecting);
-                    break;
-                case EngineState.Seeding:
-                    // Ignore seeding state
-                    break;
-                case EngineState.Ready:
-                    View.TogglePage(MainWindow.MainPages.Main);
-                    break;
-                case EngineState.Stopping:
-                    // Ignore stopping state
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        });
+                switch (e.State)
+                {
+                    case EngineState.Stopped:
+                        View.TogglePage(MainWindow.MainPages.Welcome);
+                        _ = _welcomePagePresenter.RefreshAsync();
+                        break;
+                    case EngineState.Starting:
+                        View.TogglePage(MainWindow.MainPages.Connecting);
+                        break;
+                    case EngineState.Seeding:
+                        // Ignore seeding state
+                        break;
+                    case EngineState.Ready:
+                        View.TogglePage(MainWindow.MainPages.Main);
+                        break;
+                    case EngineState.Stopping:
+                        // Ignore stopping state
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
+        }
+        catch (Exception)
+        {
+            // TODO: Log
+        }
     }
 
     public void Attach(MainWindow view)
@@ -107,9 +114,16 @@ public partial class MainWindowPresenter : IRecipient<ShowToastMessage>
         ShowToast(message.Message);
     }
 
-    private void ShowToast(string message)
+    private async void ShowToast(string message)
     {
-        GtkDispatch.InvokeIdle(() => { View.ShowToast(message); });
+        try
+        {
+            await GtkDispatch.InvokeIdleAsync(() => { View.ShowToast(message); });
+        }
+        catch (Exception)
+        {
+            // TODO: Log
+        }
     }
 
     [LoggerMessage(LogLevel.Critical, "Failed to disconnect.")]

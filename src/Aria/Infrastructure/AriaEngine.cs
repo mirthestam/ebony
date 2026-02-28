@@ -20,6 +20,8 @@ public class AriaEngine(
     private readonly PlayerProxy _playerProxy = new();
     private readonly QueueProxy _queueProxy = new();
 
+    private ConnectionContext? _connectionContext = null;
+
     public event EventHandler<EngineStateChangedEventArgs>? StateChanged;
     
     public async Task RunInspectionAsync()
@@ -35,8 +37,7 @@ public class AriaEngine(
     public IQueue Queue => _queueProxy;
     public ILibrary Library => _libraryProxy;
 
-    private ResourceCacheLibrarySource? _resourceCache;
-    private QueryCacheLibrarySource? _infoCache;
+    private AlbumArtCache? _resourceCache;
 
     public Task InitializeAsync()
     {
@@ -100,14 +101,8 @@ public class AriaEngine(
 
             _playerProxy.Attach(backend.Player);
             _queueProxy.Attach(backend.Queue);
-
-            // Wrap the backend library with its caches
-            _resourceCache = new ResourceCacheLibrarySource(backend.Library, connectionProfile.Id.ToString(),
-                TimeSpan.FromDays(30));
-            _infoCache = new QueryCacheLibrarySource(_resourceCache, TimeSpan.FromDays(5));
-
-            _libraryProxy.Attach(_infoCache);
-
+            _libraryProxy.Attach(backend.Library);
+            
             //  Initialize the backend. This is where it will connect.
             await backend.ConnectAsync(cancellationToken).ConfigureAwait(false);
             
@@ -140,7 +135,6 @@ public class AriaEngine(
         _playerProxy.Detach();
         _queueProxy.Detach();
         _libraryProxy.Detach();
-        _infoCache?.Dispose();
 
         var connection = _backendScope.Connection;
 

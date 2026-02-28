@@ -56,16 +56,22 @@ public partial class PlaylistNameCell
         Model = null;
     }
     
-    private void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async void ModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(PlaylistModel.CoverArt)) return;            
-        
-        GtkDispatch.InvokeIdle(UpdateCoverPicture);
+        try
+        {
+            if (e.PropertyName != nameof(PlaylistModel.CoverArt)) return;            
+            await GtkDispatch.InvokeIdleAsync(UpdateCoverPicture);
+        }
+        catch (Exception)
+        {
+            // TODO: Log
+        }
     }
 
     private void UpdateCoverPicture()
     {
-        _coverPicture.SetPaintable(Model?.CoverArt?.Paintable);
+        _coverPicture.SetPaintable(Model.CoverArt?.Paintable);
     }    
     
     private static void DragOnOnDragBegin(DragSource sender, DragSource.DragBeginSignalArgs args)

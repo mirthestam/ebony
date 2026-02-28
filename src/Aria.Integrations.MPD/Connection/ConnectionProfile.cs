@@ -12,12 +12,12 @@ public class ConnectionProfile : IConnectionProfile
     public int Port { get; set; } = 6600;
     public string Password { get; set; } = string.Empty;
 
-    public bool UseSocket { get; set; } = false;
+    public bool UseSocket { get; set; }
     
     public string Name { get; set; } = "Unnamed MPD Connection";
-    public bool AutoConnect { get; set; } = false;
+    public bool AutoConnect { get; set; }
     
-    public string ConnectionDisplayString =>UseSocket ? $"{Socket}" : $"{Host}:{Port}";
-
     public ConnectionFlags Flags { get; set; } = ConnectionFlags.None;
+    
+    public long LastDbUpdate { get; set; }
 }

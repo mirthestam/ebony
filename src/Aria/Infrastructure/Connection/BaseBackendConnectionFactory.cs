@@ -31,8 +31,14 @@ public class BaseBackendConnectionFactory<TBackendConnection, TConnectionProfile
         var scope = serviceProvider.CreateScope();
         try
         {
+            // Set the connection context for the scope
+            var context = scope.ServiceProvider.GetRequiredService<ConnectionContext>();
+            context.Profile = profile;            
+            
             var connection = scope.ServiceProvider.GetRequiredService<TBackendConnection>();
             await ConfigureAsync(connection, connectionProfile);
+            
+            // Consider if I should add the connection to the scope as well
             
             return new ScopedBackendConnection(connection, scope);
         }

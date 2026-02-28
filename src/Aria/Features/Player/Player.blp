@@ -18,18 +18,22 @@ template $AriaFeaturesPlayerPlayer: Box {
 
           Revealer coverart-revealer {
             child: Picture album-picture {
+              can-shrink: false;
+
               css-classes: [
                 "cover",
               ];
 
-              height-request: 128;
+              height-request: -1;
+              hexpand: false;
               margin-bottom: 12;
               margin-end: 12;
               margin-start: 12;
               margin-top: 0;
+              vexpand: false;
             };
 
-            reveal-child: false;
+            reveal-child: true;
             transition-duration: 500;
             transition-type: slide_down;
             vexpand: false;
