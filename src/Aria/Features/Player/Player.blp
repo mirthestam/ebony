@@ -2,8 +2,6 @@ using Gtk 4.0;
 using Adw 1;
 
 template $AriaFeaturesPlayerPlayer: Box {
-  height-request: 200;
-  width-request: 300;
 
   Adw.ToolbarView {
     content: Adw.ViewStack player-stack {
@@ -46,6 +44,7 @@ template $AriaFeaturesPlayerPlayer: Box {
 
         icon-name: "playlist-symbolic";
         name: "playlist";
+        title: "Queue";
       }
 
       Adw.ViewStackPage lyrics-page {
@@ -55,6 +54,7 @@ template $AriaFeaturesPlayerPlayer: Box {
 
         icon-name: "format-justify-left-symbolic";
         name: "lyrics";
+        title: "Lyrics";
         visible: false;
       }
     };

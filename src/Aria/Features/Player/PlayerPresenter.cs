@@ -263,6 +263,7 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
             {
                 await GtkDispatch.InvokeIdleAsync(() =>
                 {
+                    if (cancellationToken.IsCancellationRequested) return;
                     View?.ClearCoverArt();
                     _currentCoverArt?.Dispose();                    
                 }, cancellationToken);
@@ -271,19 +272,15 @@ public partial class PlayerPresenter : IRootPresenter<Player>,  IRecipient<Playe
 
                 return;
             }
-            
-            //var texture = await _resourceTextureLoader.LoadFromAlbumResourceAsync(coverInfo?.Id ?? Id.Empty, cancellationToken).ConfigureAwait(false);
-            var newCoverArt = await Task.Run(
-                () => _artAssetLoader.LoadFromAssetAsync(coverInfo?.Id ?? Id.Empty, cancellationToken),
-                cancellationToken).ConfigureAwait(false);
-            if (cancellationToken.IsCancellationRequested) return;
-            if (newCoverArt == null) return;
-            
+
+            var newCoverArt = await _artAssetLoader.LoadFromAssetAsync(coverInfo?.Id ?? Id.Empty, cancellationToken);
             var previousCoverArt = _currentCoverArt;
             _currentCoverArt = newCoverArt;            
             
+            
             await GtkDispatch.InvokeIdleAsync(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 View?.LoadCoverArt(newCoverArt);
             }, cancellationToken);            
             

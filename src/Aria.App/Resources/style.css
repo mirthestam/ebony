@@ -40,20 +40,6 @@
     /* TODO: Playlists columns view */
 }
 
-listview, list {
-    &, &.view, &.view:disabled {
-        background-color: transparent;
-        color: inherit;
-    }
-
-    &.background {
-        &, &:disabled {
-            background-color: var(--window-bg-color);
-            color: var(--window-fg-color);
-        }
-    }
-}
-
 @media (prefers-color-scheme: light) {
     .colorized-main-page {
         --sidebar-bg-color: rgb(0 0 0 / 6%);

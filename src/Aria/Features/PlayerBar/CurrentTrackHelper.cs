@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Aria.Core.Library;
 
 namespace Aria.Features.PlayerBar;

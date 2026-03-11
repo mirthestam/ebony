@@ -41,7 +41,7 @@
   <ui template-class="AriaFeaturesPlayerQueueSaveQueueDialog" filename="Features/Player/Queue/SaveQueueDialog.blp" sha256="525b1c84803ad8782f4645b620f2a1d965ba6a1cf2e30cd28db8253e580d449b"/>
   <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage" filename="Features/Browser/Playlists/PlaylistsEmptyPage.blp" sha256="210032aec357b779053cb857856b42332361160502218cb2b0f7630799c96a5c"/>
   <ui template-class="AriaFeaturesPlayerQueueTrackListItem" filename="Features/Player/Queue/TrackListItem.blp" sha256="d88684d555eb6955edc6783d1f692dd8bd7ecd6dd8062b6b6d2a91886a83e513"/>
-  <ui template-class="AriaFeaturesBrowserAlbumCreditBox" filename="Features/Browser/Album/CreditBox.blp" sha256="d665c8b16addf8fb6cca79f0bedd68210821e51f25bc797142f583b6de4ade6a"/>
+  <ui template-class="AriaFeaturesBrowserAlbumCreditBox" filename="Features/Browser/Album/CreditBox.blp" sha256="4ef8bdfe41419b650ae15011f0adbd5a00df81e7544a034f119aa2ff3508b4ad"/>
   <ui template-class="AriaFeaturesPlayerBarPlayerBar" filename="Features/PlayerBar/PlayerBar.blp" sha256="1eeece751365c9420565719d5bd7afa2dda17e4f436da678e8ae84e888a4cf39">
     <requires>AriaFeaturesPlayerMediaControls</requires>
   </ui>
@@ -54,6 +54,9 @@
   <ui template-class="AriaFeaturesBrowserArtistArtistPage" filename="Features/Browser/Artist/ArtistPage.blp" sha256="1aa03a0d0285aec32d55c0b484af7b0d7e9df8fd4713b7a9e025702f29ae5cca">
     <requires>AriaFeaturesBrowserArtistEmptyPage</requires>
     <requires>AriaFeaturesBrowserSharedAlbumsGrid</requires>
+  </ui>
+  <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsPage" filename="Features/Browser/Playlists/PlaylistsPage.blp" sha256="fd5d954b86b49a171ec1f8f9cac6daf8df0865147fc160d8f3afce8c5b950664">
+    <requires>AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage</requires>
   </ui>
   <ui template-class="AriaFeaturesPlayerPlaybackControls" filename="Features/Player/PlaybackControls.blp" sha256="c417f56cc5495043c295519d58a21abfa287e2175232dac19e352818a871db77">
     <requires>AriaFeaturesPlayerQueueTrackListItem</requires>
@@ -72,7 +75,7 @@
     <requires>AriaFeaturesBrowserArtistsArtistsPage</requires>
     <requires>AriaFeaturesBrowserSearchSearchPage</requires>
   </ui>
-  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp" sha256="d006fbc55f11dcc44781b021204f7b1d6a5f96193f0ff9d6b73b870b7469b0c0">
+  <ui template-class="AriaFeaturesPlayerPlayer" filename="Features/Player/Player.blp" sha256="10ff4a0bc183665a42ba1fbd6877c21edd5f400cdaa4041761eb485eba317895">
     <requires>AriaFeaturesPlayerQueueQueue</requires>
     <requires>AriaFeaturesPlayerPlaybackControls</requires>
   </ui>
@@ -85,8 +88,5 @@
     <requires>AriaFeaturesShellMainPage</requires>
     <requires>AriaFeaturesShellWelcomeWelcomePage</requires>
     <requires>AriaFeaturesShellConnectingPage</requires>
-  </ui>
-  <ui template-class="AriaFeaturesBrowserPlaylistsPlaylistsPage" filename="Features/Browser/Playlists/PlaylistsPage.blp">
-    <requires>AriaFeaturesBrowserPlaylistsPlaylistsEmptyPage</requires>
   </ui>
 </cambalache-project>

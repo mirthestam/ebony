@@ -156,7 +156,11 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
             var track = _aria.Queue.CurrentTrack;
             if (track == null)
             {
-                await GtkDispatch.InvokeIdleAsync(() => { _view?.ClearCoverArt(); }, cancellationToken);
+                await GtkDispatch.InvokeIdleAsync(() => 
+                { 
+                    if (cancellationToken.IsCancellationRequested) return;
+                    _view?.ClearCoverArt(); 
+                }, cancellationToken);
 
                 _currentCoverArt?.Dispose();
                 _currentCoverArt = null;
@@ -172,7 +176,11 @@ public partial class PlayerBarPresenter : IRecipient<PlayerStateChangedMessage>,
             var previousCoverArt = _currentCoverArt;
             _currentCoverArt = newCoverArt;
 
-            await GtkDispatch.InvokeIdleAsync(() => { _view?.LoadCoverArt(newCoverArt); }, cancellationToken);
+            await GtkDispatch.InvokeIdleAsync(() => 
+            { 
+                if (cancellationToken.IsCancellationRequested) return;
+                _view?.LoadCoverArt(newCoverArt); 
+            }, cancellationToken);
 
             previousCoverArt?.Dispose();
         }

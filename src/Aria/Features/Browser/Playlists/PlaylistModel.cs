@@ -47,9 +47,9 @@ public partial class PlaylistModel : INotifyPropertyChanged
 
     public Id? CoverArtId { get; private set; }
 
-    public string Name { get; private set; }
+    public string Name { get; private set; } = "";
 
-    public string Credits { get; private set; }
+    public string Credits { get; private set; } = "";
     
     public Art? CoverArt
     {

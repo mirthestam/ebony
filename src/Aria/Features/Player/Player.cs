@@ -58,10 +58,10 @@ public partial class Player
         return SeekRequested?.Invoke(position, cancellationToken) ?? Task.CompletedTask;
     }
     
-    public void LoadCoverArt(Art art)
+    public void LoadCoverArt(Art? art)
     {
         _playbackControls.SetCoverArt(art);
-        _coverPicture.SetPaintable(art.Paintable);
+        _coverPicture.SetPaintable(art?.Paintable);
     }
 
     public void ClearCoverArt()
