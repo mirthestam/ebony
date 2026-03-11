@@ -12,25 +12,25 @@
         <property name="title">Playback</property>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-player.play-pause</property>
+            <property name="action-name">ebony-player.play-pause</property>
             <property name="title">Play / Pause</property>
           </object>
         </child>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-player.next</property>
+            <property name="action-name">ebony-player.next</property>
             <property name="title">Next Track</property>
           </object>
         </child>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-player.previous</property>
+            <property name="action-name">ebony-player.previous</property>
             <property name="title">Previous Track</property>
           </object>
         </child>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-player.stop</property>
+            <property name="action-name">ebony-player.stop</property>
             <property name="title">Stop</property>
           </object>
         </child>
@@ -40,13 +40,13 @@
       <object class="AdwShortcutsSection">
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-queue.save</property>
+            <property name="action-name">ebony-queue.save</property>
             <property name="title">Save to Playlist</property>
           </object>
         </child>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-queue.clear</property>
+            <property name="action-name">ebony-queue.clear</property>
             <property name="title">Clear Queue</property>
           </object>
         </child>
@@ -57,13 +57,13 @@
         <property name="title">Browser</property>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-browser.search</property>
+            <property name="action-name">ebony-browser.search</property>
             <property name="title">Search</property>
           </object>
         </child>
         <child>
           <object class="AdwShortcutsItem">
-            <property name="action-name">Ebony-browser.show-all-albums</property>
+            <property name="action-name">ebony-browser.show-all-albums</property>
             <property name="title">Show All Albums</property>
           </object>
         </child>
