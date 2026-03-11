@@ -49,7 +49,7 @@ public class LibraryCache : ILibraryCache
         }
     }
 
-    public async Task<T?> GetOrAddAsync<T>(string key, Func<Task<T?>> factory, CancellationToken ct = default) where T : class
+    public async Task<T?> GetOrAddAsync<T>(string key, Func<Task<T?>> factory, CancellationToken ct = default)
     {
         // Check memory cache
         if (_memoryCache.TryGetValue(key, out var entry))
@@ -231,10 +231,10 @@ public class LibraryCache : ILibraryCache
         }
     }
 
-    private async Task<T?> LoadFromDiskAsync<T>(string key, CancellationToken ct) where T : class
+    private async Task<T?> LoadFromDiskAsync<T>(string key, CancellationToken ct)
     {
         var path = GetCacheFilePath(key);
-        if (!File.Exists(path)) return null;
+        if (!File.Exists(path)) return default;
 
         await _diskLock.WaitAsync(ct);
         try
@@ -248,9 +248,10 @@ public class LibraryCache : ILibraryCache
             try { File.Delete(path); }
             catch
             {
+                // Ok
             }
 
-            return null;
+            return default;
         }
         finally
         {

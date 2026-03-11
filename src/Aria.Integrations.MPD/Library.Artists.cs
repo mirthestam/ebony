@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using Aria.Backends.MPD.Connection;
 using Aria.Backends.MPD.Extraction;
@@ -50,38 +49,44 @@ public partial class Library
 
     public override async Task<IEnumerable<ArtistInfo>> GetArtistsAsync(CancellationToken cancellationToken = default)
     {
+        return await LoadArtistsWithRecoveryAsync(cancellationToken);
+    }
+
+    private async Task<List<ArtistInfo>> LoadArtistsWithRecoveryAsync(CancellationToken cancellationToken)
+    {
         const string allArtistsIndexKey = "artists:all:index";
 
-        var index = await cache.GetOrAddAsync(allArtistsIndexKey, async () => await CacheArtistsFromBackend(cancellationToken),
+        var index = await cache.GetOrAddAsync(allArtistsIndexKey,
+            async () => await CacheArtistsFromBackend(cancellationToken),
             cancellationToken);
         if (index == null) return [];
-        
-        // Load aliases from cache if not populated
+
         if (_artistAliases.IsEmpty)
         {
             await LoadAliasesFromCache(cancellationToken);
         }
-        
+
         var loadArtistTasks = index.ItemKeys
-            .Select(key => cache.GetOrAddAsync<ArtistInfo?>(key, () => Task.FromResult<ArtistInfo?>(null), cancellationToken))
+            .Select(key =>
+                cache.GetOrAddAsync<ArtistInfo?>(key, () => Task.FromResult<ArtistInfo?>(null), cancellationToken))
             .ToList();
 
         var artists = await Task.WhenAll(loadArtistTasks);
-        var artistsList =artists.Where(a => a != null).Cast<ArtistInfo>().ToList();
+        var artistsList = artists.Where(a => a != null).Cast<ArtistInfo>().ToList();
 
-        if (artistsList.Count != index.ItemKeys.Count)
-        {
-            logger.LogError("The retrieved number of artists does not equal the number of artists in the index.");
-        }
+        if (artistsList.Count == index.ItemKeys.Count) return artistsList;
         
-        return artistsList;
+        logger.LogWarning("The retrieved number of artists does not equal the number of artists in the index. Rebuilding cache.");
+        cache.Invalidate(allArtistsIndexKey);
+        return await LoadArtistsWithRecoveryAsync(cancellationToken);
     }
 
     private async Task LoadAliasesFromCache(CancellationToken cancellationToken)
     {
-        var aliasesEntry = await cache.GetOrAddAsync<ArtistAliasesCacheEntry>("artists:aliases", () => Task.FromResult<ArtistAliasesCacheEntry?>(null), cancellationToken);
+        var aliasesEntry = await cache.GetOrAddAsync("artists:aliases",
+            () => Task.FromResult<ArtistAliasesCacheEntry?>(null), cancellationToken);
         if (aliasesEntry?.Aliases == null) return;
-        
+
         foreach (var (artistName, aliases) in aliasesEntry.Aliases)
         {
             var artistId = new ArtistId(artistName);
@@ -114,21 +119,21 @@ public partial class Library
 
         var cacheArtistTasks = artists.Select(async a =>
         {
-            var x = await cache.GetOrAddAsync<ArtistInfo?>($"artist:{a.Id}", () => Task.FromResult<ArtistInfo?>(a),
-                cancellationToken);
+             await cache.GetOrAddAsync<ArtistInfo?>($"artist:{a.Id}", () => Task.FromResult<ArtistInfo?>(a), cancellationToken);
             return $"artist:{a.Id}";
         }).ToList();
 
         // Cache all artists
         var keys = await Task.WhenAll(cacheArtistTasks);
-        
+
         // Also cache aliases
         var aliasesDict = _artistAliases.ToDictionary(
-            kvp => ((ArtistId)kvp.Key).Value,
-            kvp => (IReadOnlyList<string>)kvp.Value.Keys.ToList()
+            kvp => ((ArtistId)kvp.Key).Value, IReadOnlyList<string> (kvp) => kvp.Value.Keys.ToList()
         );
-        await cache.GetOrAddAsync("artists:aliases", () => Task.FromResult<ArtistAliasesCacheEntry?>(new ArtistAliasesCacheEntry(aliasesDict)), cancellationToken);
-        
+        await cache.GetOrAddAsync("artists:aliases",
+            () => Task.FromResult<ArtistAliasesCacheEntry?>(new ArtistAliasesCacheEntry(aliasesDict)),
+            cancellationToken);
+
         return new CollectionCacheEntry(keys, DateTimeOffset.UtcNow);
 
         async Task FetchAndAddSingles(IMpcCommand<IEnumerable<string>> command, ArtistRoles role,
