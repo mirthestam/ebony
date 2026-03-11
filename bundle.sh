@@ -8,11 +8,11 @@ if [ ! -f "$NUGET_SOURCES_JSON" ]; then
 fi
 
 # Build the repo
-flatpak-builder --force-clean --user --install-deps-from=flathub --repo=flatpak/repo flatpak/builddir ./flatpak/nl.mirthestam.aria.yml
+flatpak-builder --force-clean --user --install-deps-from=flathub --repo=flatpak/repo flatpak/builddir ./flatpak/nl.mirthestam.ebony.yml
 
 # Bundle the repo
-echo "Bundling to ./flatpak/aria.flatpak"
-flatpak build-bundle flatpak/repo flatpak/aria.flatpak nl.mirthestam.aria \
+echo "Bundling to ./flatpak/ebony.flatpak"
+flatpak build-bundle flatpak/repo flatpak/ebony.flatpak nl.mirthestam.ebony \
   --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
   
-echo "Exported ./flatpak/aria.flatpak"
+echo "Exported ./flatpak/ebony.flatpak"

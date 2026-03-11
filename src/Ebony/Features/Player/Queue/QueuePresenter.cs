@@ -1,0 +1,309 @@
+using Ebony.Core;
+using Ebony.Core.Extraction;
+using Ebony.Core.Library;
+using Ebony.Core.Player;
+using Ebony.Core.Queue;
+using Ebony.Features.Shell;
+using Ebony.Infrastructure;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
+using Task = System.Threading.Tasks.Task;
+
+namespace Ebony.Features.Player.Queue;
+
+// TODO: When queueing one item, still problem with applying queue mode.
+
+public partial class QueuePresenter : IRecipient<QueueStateChangedMessage>, IRecipient<PlayerStateChangedMessage>
+{
+    private readonly ILogger<QueuePresenter> _logger;
+    private readonly ArtAssetLoader _artAssetLoader;
+    private readonly IMessenger _messenger;
+    private readonly IEbony _ebony;
+
+    private Queue? _view;
+
+    private CancellationTokenSource? _loadCts;
+
+    // Reuse UI models between refreshes to avoid churn when only order changes.
+    private readonly Dictionary<Id, QueueTrackModel> _modelsByQueueTrackId = new();
+
+    private readonly QueueModel _queueModel = QueueModel.NewWithProperties([]);
+
+    private void Abort()
+    {
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+        _loadCts = null;
+    }
+    
+    private async Task AbortAndClearAsync()
+    {
+        Abort();
+        
+        await GtkDispatch.InvokeIdleAsync(() => 
+        {
+            _view?.TogglePage(Queue.QueuePages.Empty);
+            _view?.RefreshTracks([]);
+        }).ConfigureAwait(false);
+
+        foreach (var model in _modelsByQueueTrackId.Values)
+        {
+            // Triggers disposal of the unmanaged texture via the property setter
+            model.CoverArt = null;
+            
+            // Release managed wrapper ref (GObject) held by our cache
+            model.Dispose();            
+        }
+        
+        _modelsByQueueTrackId.Clear();       
+    }        
+
+    public QueuePresenter(IMessenger messenger, IEbony Ebony, ILogger<QueuePresenter> logger, ArtAssetLoader artAssetLoader)
+    {
+        _logger = logger;
+        _artAssetLoader = artAssetLoader;
+        _messenger = messenger;
+        _ebony = Ebony;
+        _messenger.Register<QueueStateChangedMessage>(this);
+        _messenger.Register<PlayerStateChangedMessage>(this);
+    }
+
+    public void Attach(Queue view)
+    {
+        _view = view;
+        _view.TrackActivated += ViewOnTrackActivated;
+        _view.EnqueueRequested += ViewOnEnqueueRequested;
+        _view.MoveRequested += ViewOnMoveRequested;
+        _view.TogglePage(Queue.QueuePages.Empty);
+    }
+    
+    private async void ViewOnMoveRequested(object? sender, MoveRequestedEventArgs args)
+    {
+        try
+        {
+            await _ebony.Queue.MoveAsync(args.SourceId, args.TargetIndex);
+        }
+        catch (Exception exception)
+        {
+            _messenger.Send(new ShowToastMessage("Could not move"));
+            LogCouldNotMove(exception);
+        }
+    }
+
+    private async void ViewOnEnqueueRequested(object? sender, EnqueueRequestedEventArgs args)
+    {
+        try
+        {
+            var info = await _ebony.Library.GetItemAsync(args.Id);
+            if (info == null) return;
+            
+            await _ebony.Queue.EnqueueAsync(info, args.Index);
+        }
+        catch (Exception exception)
+        {
+            _messenger.Send(new ShowToastMessage("Could not enqueue"));
+            LogCouldNotEnqueue(exception);
+        }
+    }
+
+    public async Task RefreshAsync(CancellationToken externalCancellationToken = default)
+    {
+        await RefreshTracksAsync(externalCancellationToken);
+    }
+
+    public async Task ResetAsync()
+    {
+        await AbortAndClearAsync();
+    }    
+    
+    public void Receive(PlayerStateChangedMessage message)
+    {
+        if (!message.Value.HasFlag(PlayerStateChangedFlags.PlaybackState)) return;
+        
+        _view?.ChangePlayState(_ebony.Player.State);
+    }
+
+    public async void Receive(QueueStateChangedMessage message)
+    {
+        try
+        {
+            if (message.Value.HasFlag(QueueStateChangedFlags.Id))
+                // The identifier of the playlist has changed.
+                // We need to reload the tracks
+                await RefreshTracksAsync();
+
+            if (message.Value.HasFlag(QueueStateChangedFlags.PlaybackOrder))
+            {
+                await GtkDispatch.InvokeIdleAsync(() =>
+                {
+                    _view?.CurrentTrackIndex(_ebony.Queue.Order.CurrentIndex, _ebony.Player.State);
+                });        
+            }
+        }
+        catch (Exception e)
+        {
+            LogCouldNotUpdateQueue(e);
+        }
+
+    }
+
+    private void ViewOnTrackActivated(object? sender, TrackActivatedEventArgs e)
+    {
+        // Player needs the index on the queue
+        _ebony.Player.PlayAsync(e.SelectedIndex);
+    }
+
+    private async Task RefreshTracksAsync(CancellationToken externalCancellationToken = default)
+    {
+        try
+        {
+            Abort();
+            LogRefreshingPlaylist();
+
+            _loadCts = CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken);
+            var ct = _loadCts.Token;
+            
+            _queueModel.Mode = _ebony.Queue.Mode;
+
+            // Build the ordered model list by reusing existing models where possible.
+            var newOrderedModels = new List<QueueTrackModel>();
+            var seenIds = new HashSet<Id>();
+
+            foreach (var t in _ebony.Queue.Tracks)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                var queueTrackId = t.Id;
+
+                seenIds.Add(queueTrackId);
+
+                if (!_modelsByQueueTrackId.TryGetValue(queueTrackId, out var model))
+                {
+                    model = QueueTrackModel.NewFromQueueTrackInfo(t, _queueModel);
+                    _modelsByQueueTrackId[queueTrackId] = model;
+                }
+                else
+                {
+                    model.Position = t.Position;
+                }
+
+                newOrderedModels.Add(model);
+            }
+            
+            var modelsToDispose = new List<QueueTrackModel>();            
+            var removedIds = _modelsByQueueTrackId.Keys.Where(id => !seenIds.Contains(id)).ToList();
+            foreach (var removedId in removedIds)
+            {
+                if (_modelsByQueueTrackId.TryGetValue(removedId, out var removedModel))
+                    modelsToDispose.Add(removedModel);                
+            }
+
+            ct.ThrowIfCancellationRequested();
+
+            await GtkDispatch.InvokeIdleAsync(() =>
+            {
+                _view?.RefreshTracks(newOrderedModels);
+                _view?.TogglePage(_ebony.Queue.Length != 0 ? Queue.QueuePages.Tracks : Queue.QueuePages.Empty);
+            }, ct).ConfigureAwait(false);
+            
+            // Now it's safe to remove + dispose removed models (GTK has dropped refs)
+            foreach (var removedId in removedIds)
+            {
+                _modelsByQueueTrackId.Remove(removedId);
+            }
+            
+            foreach (var obsoleteModel in modelsToDispose)
+            {
+                obsoleteModel.CoverArt = null;
+                obsoleteModel.Dispose();
+            }
+            
+            await ProcessArtworkAsync(newOrderedModels, ct);
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when a new cover starts loading
+        }
+        catch (Exception e)
+        {
+            LogCouldNotLoadTracks(e);
+            _view?.TogglePage(Queue.QueuePages.Empty);
+            _messenger.Send(new ShowToastMessage("Could not load playlist"));
+        }
+    }
+    
+    private async Task ProcessArtworkAsync(IEnumerable<QueueTrackModel> models, CancellationToken ct)
+    {
+        LogLoadingAlbumArtwork();
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 1,
+            CancellationToken = ct
+        };
+
+        try
+        {
+            await Parallel.ForEachAsync(models, options,
+                async (model, token) =>
+                {
+                    ct.ThrowIfCancellationRequested();
+                    if (model.CoverArt != null) return;
+                    await LoadArtForModelAsync(model, token);
+                });
+            
+            LogArtworkLoadingCompleted();
+        }
+        catch (OperationCanceledException)
+        {
+            LogArtworkLoadingAborted();
+        }
+    }
+
+    private async Task LoadArtForModelAsync(QueueTrackModel model, CancellationToken ct = default)
+    {
+        var album = await _ebony.Library.GetAlbumAsync(model.AlbumId, ct).ConfigureAwait(false);
+        if (album == null) return;
+        
+        var artId = album.Assets.FirstOrDefault(r => r.Type == AssetType.FrontCover)?.Id;
+        if (artId == null) return;
+        
+        try
+        {
+            model.CoverArt = await _artAssetLoader.LoadFromAssetAsync(artId, ct).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception e)
+        {
+            LogCouldNotLoadArtworkForTrack(e, model.TrackId);
+        }
+    }
+
+    [LoggerMessage(LogLevel.Error, "Could not load tracks")]
+    partial void LogCouldNotLoadTracks(Exception e);
+
+    [LoggerMessage(LogLevel.Information, "Refreshing playlist")]
+    partial void LogRefreshingPlaylist();
+
+    [LoggerMessage(LogLevel.Error, "Could not enqueue")]
+    partial void LogCouldNotEnqueue(Exception e);
+    
+    [LoggerMessage(LogLevel.Error, "Could not move")]
+    partial void LogCouldNotMove(Exception e);
+
+    [LoggerMessage(LogLevel.Warning, "Could not update queue")]
+    partial void LogCouldNotUpdateQueue(Exception e);
+
+    [LoggerMessage(LogLevel.Debug, "Loading album artwork.")]
+    partial void LogLoadingAlbumArtwork();
+
+    [LoggerMessage(LogLevel.Information, "Artwork loading completed.")]
+    partial void LogArtworkLoadingCompleted();
+
+    [LoggerMessage(LogLevel.Information, "Artwork loading aborted.")]
+    partial void LogArtworkLoadingAborted();
+
+    [LoggerMessage(LogLevel.Warning, "Could not load artwork for {track}")]
+    partial void LogCouldNotLoadArtworkForTrack(Exception e, Id track);
+}

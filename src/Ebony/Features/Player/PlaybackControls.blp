@@ -1,0 +1,135 @@
+using Gtk 4.0;
+
+template $EbonyFeaturesPlayerPlaybackControls: Box {
+  hexpand: true;
+  orientation: vertical;
+
+  Separator {
+    height-request: 1;
+    margin-bottom: 12;
+    margin-start: 0;
+    margin-top: 1;
+  }
+
+  $EbonyFeaturesPlayerQueueTrackListItem track-item {
+    margin-bottom: "0";
+    margin-end: "14";
+    margin-start: "14";
+  }
+
+  Scale elapsed-scale {
+    adjustment: Adjustment {
+      page-increment: 10;
+      step-increment: 10;
+      upper: 0;
+      value: 0;
+    };
+
+    hexpand: true;
+  }
+
+  CenterBox controls-center-box {
+    center-widget: Box {
+      spacing: 12;
+
+      $EbonyFeaturesPlayerMediaControls media-controls {}
+    };
+
+    css-classes: [
+      "toolbar",
+    ];
+
+    end-widget: Box {
+      spacing: 12;
+
+      ScaleButton volume-scale-button {
+        adjustment: Adjustment {
+          page-increment: 10;
+          step-increment: 2;
+          upper: 100;
+          value: 50;
+        };
+
+        icons: [
+          "audio-volume-muted-symbolic",
+          "audio-volume-high-symbolic",
+          "audio-volume-low-symbolic",
+          "audio-volume-medium-symbolic",
+        ];
+
+        value: 0;
+        visible: true;
+      }
+
+      Box right-info-box {
+        orientation: vertical;
+
+        Label remaining-time-label {
+          label: "00:00";
+          xalign: 1;
+        }
+
+        Label tech-label {
+          css-classes: [
+            "dimmed",
+            "caption",
+            "                                ",
+          ];
+
+          label: "24-bit 96k";
+          xalign: 1;
+        }
+      }
+    };
+
+    margin-end: 6;
+    margin-start: 6;
+
+    start-widget: Box {
+      spacing: 12;
+
+      Box left-info-box {
+        css-classes: [
+          "toolbar-text",
+        ];
+
+        orientation: vertical;
+        spacing: 0;
+        valign: start;
+
+        Label elapsed-time-label {
+          has-tooltip: true;
+          label: "00:00";
+          tooltip-text: "Elapsed time";
+          xalign: 0;
+        }
+
+        Label playlist-progress-label {
+          css-classes: [
+            "dimmed",
+            "caption",
+            "                                ",
+          ];
+
+          label: "0/0";
+          xalign: 0;
+        }
+      }
+    };
+  }
+}
+
+Popover elapsed-popover {
+  autohide: false;
+
+  child: Label elapsed-popover-label {
+    css-classes: [
+      "numeric",
+    ];
+
+    single-line-mode: true;
+  };
+
+  has-arrow: false;
+  position: top;
+}

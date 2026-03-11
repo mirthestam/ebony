@@ -1,0 +1,14 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesBrowserArtistEmptyPage: Box {
+  hexpand: false;
+
+  Adw.StatusPage {
+    description: "This artist has no known albums or works.";
+    hexpand: true;
+    icon-name: "folder-music-symbolic";
+    title: "Nothing to show.";
+    vexpand: false;
+  }
+}

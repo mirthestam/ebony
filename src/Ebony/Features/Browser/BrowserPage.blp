@@ -1,0 +1,47 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesBrowserBrowserPage: Box {
+  Adw.NavigationView browser-nav-view {
+    hexpand: true;
+
+    Adw.NavigationPage library-nav-page {
+      tag: "library-nav-page";
+      title: "Library";
+
+      Adw.BreakpointBin {
+        child: Adw.NavigationSplitView library-nav-split-view {
+          collapsed: false;
+
+          content: Adw.NavigationPage {
+            Adw.NavigationView library-nav-view {
+              $EbonyFeaturesBrowserArtistArtistPage library-artist-detail {
+                tag: "library-artist-detail";
+              }
+
+              $EbonyFeaturesBrowserAlbumsAlbumsPage library-albums {
+                tag: "library-albums";
+              }
+
+              $EbonyFeaturesBrowserPlaylistsPlaylistsPage library-playlists {
+                tag: "library-playlists";
+              }
+            }
+          };
+
+          sidebar: $EbonyFeaturesBrowserArtistsArtistsPage library-artist-list {};
+        };
+
+        height-request: 200;
+        width-request: 320;
+      }
+    }
+
+    Adw.NavigationPage search-nav-page {
+      child: $EbonyFeaturesBrowserSearchSearchPage search-page {};
+
+      tag: "search-nav-page";
+      title: "Search";
+    }
+  }
+}

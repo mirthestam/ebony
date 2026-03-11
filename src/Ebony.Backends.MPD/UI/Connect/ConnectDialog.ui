@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.99.9 -->
+<interface>
+  <!-- interface-name ConnectDialog.ui -->
+  <requires lib="gtk" version="4.18"/>
+  <requires lib="libadwaita" version="1.5"/>
+  <template class="EbonyBackendsMPDUIConnectConnectDialog" parent="AdwDialog">
+    <child>
+      <object class="AdwToastOverlay" id="toast-overlay">
+        <property name="child">
+          <object class="AdwToolbarView">
+            <property name="content">
+              <object class="AdwClampScrollable">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">24</property>
+                    <property name="vexpand">True</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="css-classes">boxed-list</property>
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwEntryRow" id="name-row">
+                            <property name="title">Name</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwEntryRow" id="host-row">
+                            <property name="title">Host</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="port-row">
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">1.0</property>
+                                <property name="step-increment">1.0</property>
+                                <property name="upper">9999.0</property>
+                                <property name="value">6600.0</property>
+                              </object>
+                            </property>
+                            <property name="climb-rate">1.0</property>
+                            <property name="digits">0</property>
+                            <property name="numeric">True</property>
+                            <property name="text">6600</property>
+                            <property name="title">Port</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPasswordEntryRow" id="password-row">
+                            <property name="show-apply-button">False</property>
+                            <property name="title">Password (Optional)</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSwitchRow" id="autoconnect-row">
+                            <property name="title">Connect on start-up</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="forget-button">
+                        <property name="action-name">connect.forget</property>
+                        <property name="css-classes">destructive-action
+pill</property>
+                        <property name="label">Forget</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="connect-button">
+                        <property name="action-name">connect.connect</property>
+                        <property name="css-classes">suggested-action
+pill</property>
+                        <property name="label">Save and Connect</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-end">12</property>
+                <property name="margin-start">12</property>
+                <property name="margin-top">24</property>
+              </object>
+            </property>
+            <child type="top">
+              <object class="AdwHeaderBar">
+                <property name="show-back-button">False</property>
+                <property name="show-end-title-buttons">False</property>
+                <property name="show-start-title-buttons">False</property>
+                <property name="show-title">False</property>
+                <child type="end">
+                  <object class="GtkButton" id="cancel-button">
+                    <property name="action-name">connect.cancel</property>
+                    <property name="label">Cancel</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>nl.mirthestam.ebony</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Ebony</name>
+  <summary>In sync with your music</summary>
+  <description>
+    <p>A remote control app for MPD and MPD-based players like Volumio that lets you browse and explore their music libraries, with dedicated support for classical music.</p>
+  </description>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <screenshots>
+  <screenshot type="default">
+    <image>https://codeberg.org/Mirthe/Ebony/raw/branch/main/screenshots/medium.png</image>
+    <caption>Main window</caption>
+  </screenshot>
+  <screenshot>
+    <image>https://codeberg.org/Mirthe/Ebony/raw/branch/main/screenshots/small.png</image>
+    <caption>Mobile view</caption>
+  </screenshot>
+  </screenshots>
+  <custom>
+    <value key="Purism::form_factor">mobile</value>
+  </custom>
+  <launchable type="desktop-id">nl.mirthestam.ebony.desktop</launchable>
+  <url type="bugtracker">https://codeberg.org/Mirthe/Ebony/issues</url>
+  <url type="homepage">https://codeberg.org/Mirthe/Ebony</url>
+  <url type="vcs-browser">https://codeberg.org/Mirthe/Ebony</url>
+  <content_rating type="oars-1.1" />
+  <translation type="gettext">nl.mirthestam.ebony</translation>
+  <provides>
+    <binary>Ebony</binary>
+  </provides>
+  <update_contact>mirthe@nuvina.nl</update_contact>
+</component>
+

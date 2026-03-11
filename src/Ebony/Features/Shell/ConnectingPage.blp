@@ -1,0 +1,69 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesShellConnectingPage: Box {
+  hexpand: true;
+  orientation: vertical;
+  vexpand: true;
+
+  Adw.ToolbarView toolbar {
+    content: Adw.StatusPage {
+      child: Box {
+        halign: center;
+        orientation: vertical;
+        spacing: 12;
+        visible: true;
+
+        Button cancel-connect-button {
+          css-classes: [
+            "pill",
+          ];
+
+          label: "_Cancel";
+          use-underline: true;
+          visible: true;
+        }
+      };
+
+      description: "Ebony is connecting to your music player...";
+      icon-name: "network-transmit-symbolic";
+      title: "Connecting";
+    };
+
+    [top]
+    Adw.HeaderBar {
+      [end]
+      MenuButton menu-button {
+        icon-name: "open-menu-symbolic";
+        menu-model: main-menu;
+        primary: true;
+      }
+    }
+  }
+}
+
+menu main-menu {
+  section artists-section {
+    item {
+      action: "win.disconnect";
+      label: "_Disconnect";
+    }
+  }
+
+  section main-section {
+    item {
+      action: "win.preferences";
+      label: "_Preferences";
+    }
+
+    item {
+      action: "app.shortcuts";
+      label: "_Keyboard shortcuts";
+    }
+
+    item {
+      action: "win.about";
+      label: "_About Ebony";
+    }
+  }
+}

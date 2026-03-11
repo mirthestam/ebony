@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.99.9 -->
+<interface>
+  <!-- interface-name shortcuts-dialog.ui -->
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.4"/>
+  <object class="AdwShortcutsDialog" id="shortcuts_dialog">
+    <property name="can-close">True</property>
+    <property name="presentation-mode">auto</property>
+    <child>
+      <object class="AdwShortcutsSection" id="playback-section">
+        <property name="title">Playback</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-player.play-pause</property>
+            <property name="title">Play / Pause</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-player.next</property>
+            <property name="title">Next Track</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-player.previous</property>
+            <property name="title">Previous Track</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-player.stop</property>
+            <property name="title">Stop</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-queue.save</property>
+            <property name="title">Save to Playlist</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-queue.clear</property>
+            <property name="title">Clear Queue</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection" id="browser-section">
+        <property name="title">Browser</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-browser.search</property>
+            <property name="title">Search</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">Ebony-browser.show-all-albums</property>
+            <property name="title">Show All Albums</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection" id="general-section">
+        <property name="title" translatable="yes">General</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="action-name">win.disconnect</property>
+            <property name="subtitle">Returns to the 'Choose a player' screen</property>
+            <property name="title">Disconnect</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes"/>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="accelerator">F10</property>
+            <property name="title" translatable="yes">Open Menu</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

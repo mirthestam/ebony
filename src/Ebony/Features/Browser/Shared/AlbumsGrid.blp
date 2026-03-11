@@ -1,0 +1,32 @@
+using Gtk 4.0;
+
+template $EbonyFeaturesBrowserSharedAlbumsGrid: Box {
+  ScrolledWindow {
+    child: GridView albums-grid-view {
+      css-classes: [
+        "navigation-sidebar",
+      ];
+
+      hexpand: true;
+      max-columns: 40;
+      min-columns: 1;
+      tab-behavior: item;
+      vexpand: true;
+
+      PopoverMenu album-popover-menu {
+        halign: start;
+        has-arrow: false;
+      }
+
+      GestureClick gesture-click {
+        button: 3;
+      }
+
+      GestureLongPress gesture-long-press {
+        touch-only: true;
+      }
+    };
+
+    hscrollbar-policy: never;
+  }
+}

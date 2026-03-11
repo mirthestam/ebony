@@ -1,0 +1,90 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesShellWelcomeWelcomePage: Box {
+  hexpand: true;
+  orientation: vertical;
+  vexpand: true;
+
+  Adw.ToolbarView toolbar {
+    content: Adw.StatusPage {
+      child: Adw.Clamp {
+        child: Box {
+          orientation: vertical;
+
+          ListBox saved-group {
+            css-classes: [
+              "boxed-list",
+            ];
+
+            selection-mode: none;
+          }
+
+          Adw.Spinner discover-spinner {
+            visible: false;
+          }
+
+          ListBox visible-group {
+            css-classes: [
+              "boxed-list",
+            ];
+
+            selection-mode: none;
+            visible: false;
+          }
+
+          CenterBox {
+            margin-top: 12;
+
+            [center]
+            Button new-button {
+              action-name: "welcome.new";
+
+              css-classes: [
+                "pill",
+                "suggested-action",
+              ];
+
+              label: "Add Player ...";
+            }
+          }
+        };
+
+        maximum-size: 420;
+      };
+
+      description: "To use Ebony, connect to a music player on your network.";
+      icon-name: "folder-music-symbolic";
+      title: "Connect to your player";
+    };
+
+    [top]
+    Adw.HeaderBar {
+      [end]
+      MenuButton menu-button {
+        icon-name: "open-menu-symbolic";
+        menu-model: main-menu;
+        primary: true;
+      }
+    }
+  }
+}
+
+menu main-menu {
+  section main-section {
+    item {
+      action: "win.preferences";
+      label: "_Preferences";
+    }
+
+    item {
+      action: "app.shortcuts";
+      label: "_Keyboard shortcuts";
+    }
+
+    item {
+      action: "win.about";
+      label: "_About Ebony";
+    }
+  }
+}

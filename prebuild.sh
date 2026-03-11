@@ -8,7 +8,7 @@ python3 ./flatpak/flatpak-dotnet-generator.py \
     --dotnet 10 \
     --freedesktop 25.08 \
     nuget-sources.json \
-    ./src/Aria.App/Aria.App.csproj
+    ./src/Ebony.App/Ebony.App.csproj
 
 
 # Check if gircore directory is not empty

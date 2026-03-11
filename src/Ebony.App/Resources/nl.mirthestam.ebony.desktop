@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Ebony
+GenericName=Music Browser
+Comment=In sync with your music
+Icon=nl.mirthestam.ebony
+Exec=nl.mirthestam.ebony
+Terminal=false
+Categories=GNOME;GTK;Music;Audio;AudioVideo;
+# Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+Keywords=music;player;audio;MPD;
+StartupNotify=true
+SingleMainWindow=true
+X-Purism-FormFactor=Workstation;Mobile;

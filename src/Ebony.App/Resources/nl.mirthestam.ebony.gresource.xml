@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/nl/mirthestam/ebony">
+		<file>nl.mirthestam.ebony.metainfo.xml</file>
+		<file>style.css</file>
+		<file>shortcuts-dialog.ui</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/playlist-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/play-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/play-outline-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/pause-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/pause-outline-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/stop-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/stop-outline-symbolic.svg</file>		
+		<file preprocess="xml-stripblanks">icons/scalable/actions/list-low-priority-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/scalable/actions/filter-symbolic.svg</file>
+	</gresource>	
+</gresources>

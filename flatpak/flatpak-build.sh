@@ -4,7 +4,7 @@
 
 # Disable telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export SRC_APP=./src/Aria.App
+export SRC_APP=./src/Ebony.App
 export SRC_RESOURCES="${SRC_APP}"/Resources
 
 # Prepare the directory

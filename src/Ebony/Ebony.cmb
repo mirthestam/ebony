@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
+<!-- Created with Cambalache 0.99.9 -->
+<cambalache-project version="0.99.0" target_tk="gtk-4.0" depends="libadwaita-1,webkitgtk-6.0">
+  <icontheme-search-path>../Ebony.App/Resources/icons</icontheme-search-path>
+  <ui template-class="EbonyFeaturesBrowserArtistEmptyPage" filename="Features/Browser/Artist/EmptyPage.blp" sha256="40e6860b98678a45abcbea1d76bb61ed0d7efaf0bce9c640c5f5bf1a6c62084e"/>
+  <ui template-class="EbonyFeaturesBrowserArtistsArtistListItem" filename="Features/Browser/Artists/ArtistListItem.blp" sha256="10ba6701fee6c35affdaf5e83ef8891965eaef2e33d6be98357593e379c1651d"/>
+  <ui template-class="EbonyFeaturesShellConnectingPage" filename="Features/Shell/ConnectingPage.blp" sha256="468ff8dde28a82ebb2583b58bbd9596693fb050f3240d692dbe9466538d05e67"/>
+  <ui template-class="EbonyFeaturesPlayerMediaControls" filename="Features/Player/MediaControls.blp" sha256="095ec42ad6501b5ed31511bea067fb8e89628e2ce11d7ce9fc57eb4d07356284"/>
+  <ui template-class="EbonyBackendsMPDUIConnectConnectDialog" filename="../Ebony.Integrations.MPD/UI/Connect/ConnectDialog.ui" sha256="9ed4ba766bc7e8041c2e84ebf058360e4e13166e4082e85e8778899d5cf908f1"/>
+  <ui template-class="EbonyFeaturesShellWelcomeWelcomePage" filename="Features/Shell/Welcome/WelcomePage.blp" sha256="2c193483338af0a1dcbb2cb180b0171b0c50695852d8172f3658b90551efeaf3"/>
+  <ui template-class="EbonyFeaturesShellWelcomeConnectionListItem" filename="Features/Shell/Welcome/ConnectionListItem.blp" sha256="17f8226f772e3c3be91bd38e66a0b7beda0dfc49479faca4e366dd131d1ebe63"/>
+  <ui template-class="EbonyFeaturesBrowserBrowserEmptyPage" filename="Features/Browser/BrowserEmptyPage.blp" sha256="6d2ab3573fac31394fd4e15b42f1b59df4cf7fb11bebb76be6a5d868d05bdc0f"/>
+  <ui template-class="EbonyFeaturesBrowserSearchSearchPage" filename="Features/Browser/Search/SearchPage.blp" sha256="3bbd1a1001cefe78200f34201c250299580bc2677f9cc69fb77bcb24011d47b0"/>
+  <ui template-class="EbonyFeaturesBrowserArtistsArtistsPage" filename="Features/Browser/Artists/ArtistsPage.blp" sha256="6234559cade24a441e5022c0c5bb66713ef6008c6d6bb5818cb6deea6714546d"/>
+  <ui template-class="EbonyFeaturesBrowserSharedAlbumsGrid" filename="Features/Browser/Shared/AlbumsGrid.blp" sha256="e75840fefc9446db244fd498728a688f2e53f42e522354e31b57493528d35f81"/>
+  <ui>
+    <content><![CDATA[<interface>
+  <requires lib="gtk" version="4.6"/>
+  <object class="GtkPopover">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Album</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </object>
+</interface>
+]]></content>
+  </ui>
+  <ui filename="../Ebony.App/Resources/shortcuts-dialog.ui" sha256="842e582a1c2a2a3f83d5e9f8bba3ff6acb89d5fa06214e96ac9bc8fa42b7e8b9"/>
+  <ui template-class="EbonyFeaturesPlayerQueueQueue" filename="Features/Player/Queue/Queue.blp" sha256="cb0d7992835411b6e586b5fa15a1853d38b1190033db360b1f17c311c28a6b9f"/>
+  <ui template-class="EbonyFeaturesBrowserPlaylistsPlaylistNameCell" filename="Features/Browser/Playlists/PlaylistNameCell.blp" sha256="5bb4c7d4c1b5ed130eb332aaf87cc2857540dbf55bb2165c6f91eb13d134295b"/>
+  <ui template-class="EbonyFeaturesDetailsTrackDetailsDialog" filename="Features/Details/TrackDetailsDialog.blp" sha256="7dc81d24a8854b79b0e9296d2fd28161bd664b137fe911c4d875931f888c2a64"/>
+  <ui template-class="EbonyFeaturesBrowserSharedAlbumListItem" filename="Features/Browser/Shared/AlbumListItem.blp" sha256="6b2d824aca40052a2bcf670db72979ccf0c48d97931d807b069f4e0ccd6528cb"/>
+  <ui template-class="EbonyFeaturesBrowserPlaylistsRenamePlaylistDialog" filename="Features/Browser/Playlists/RenamePlaylistDialog.blp" sha256="96bb701a44d659963454b6e04d72966847f731ca9d0d8cfce44455ac133e5210"/>
+  <ui template-class="EbonyFeaturesPlayerQueueSaveQueueDialog" filename="Features/Player/Queue/SaveQueueDialog.blp" sha256="525b1c84803ad8782f4645b620f2a1d965ba6a1cf2e30cd28db8253e580d449b"/>
+  <ui template-class="EbonyFeaturesBrowserPlaylistsPlaylistsEmptyPage" filename="Features/Browser/Playlists/PlaylistsEmptyPage.blp" sha256="210032aec357b779053cb857856b42332361160502218cb2b0f7630799c96a5c"/>
+  <ui template-class="EbonyFeaturesPlayerQueueTrackListItem" filename="Features/Player/Queue/TrackListItem.blp" sha256="d88684d555eb6955edc6783d1f692dd8bd7ecd6dd8062b6b6d2a91886a83e513"/>
+  <ui template-class="EbonyFeaturesBrowserAlbumCreditBox" filename="Features/Browser/Album/CreditBox.blp" sha256="4ef8bdfe41419b650ae15011f0adbd5a00df81e7544a034f119aa2ff3508b4ad"/>
+  <ui template-class="EbonyFeaturesPlayerBarPlayerBar" filename="Features/PlayerBar/PlayerBar.blp" sha256="1eeece751365c9420565719d5bd7afa2dda17e4f436da678e8ae84e888a4cf39">
+    <requires>EbonyFeaturesPlayerMediaControls</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserBrowserHost" filename="Features/Browser/BrowserHost.blp" sha256="3f0d88d162851ff62520675ea5e778d03843d1ef5aaf2d321932d20a88581fc2">
+    <requires>EbonyFeaturesBrowserBrowserEmptyPage</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserAlbumsAlbumsPage" filename="Features/Browser/Albums/AlbumsPage.blp" sha256="04e1d8b09e99351675fbe9a0bb3850fbb7f17a0f33303db87318ff457b183055">
+    <requires>EbonyFeaturesBrowserSharedAlbumsGrid</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserArtistArtistPage" filename="Features/Browser/Artist/ArtistPage.blp" sha256="1aa03a0d0285aec32d55c0b484af7b0d7e9df8fd4713b7a9e025702f29ae5cca">
+    <requires>EbonyFeaturesBrowserArtistEmptyPage</requires>
+    <requires>EbonyFeaturesBrowserSharedAlbumsGrid</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserPlaylistsPlaylistsPage" filename="Features/Browser/Playlists/PlaylistsPage.blp" sha256="fd5d954b86b49a171ec1f8f9cac6daf8df0865147fc160d8f3afce8c5b950664">
+    <requires>EbonyFeaturesBrowserPlaylistsPlaylistsEmptyPage</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesPlayerPlaybackControls" filename="Features/Player/PlaybackControls.blp" sha256="c417f56cc5495043c295519d58a21abfa287e2175232dac19e352818a871db77">
+    <requires>EbonyFeaturesPlayerQueueTrackListItem</requires>
+    <requires>EbonyFeaturesPlayerMediaControls</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserAlbumTrackGroup" filename="Features/Browser/Album/TrackGroup.blp" sha256="c878f78e35b8cba2a234fd6d761af2919a889f4a0e6516383a4ec4335fd1ddc0">
+    <requires>EbonyFeaturesBrowserAlbumCreditBox</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserAlbumAlbumPage" filename="Features/Browser/Album/AlbumPage.blp" sha256="b39c293f09f642dcfc3e8a95e0886637ccd4deffea74873b8920485a0444114f">
+    <requires>EbonyFeaturesBrowserAlbumCreditBox</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesBrowserBrowserPage" filename="Features/Browser/BrowserPage.blp" sha256="f3cefd243cfc01baee9147215de75fa7a8372950492f3b411e3c559e010c259c">
+    <requires>EbonyFeaturesBrowserArtistArtistPage</requires>
+    <requires>EbonyFeaturesBrowserAlbumsAlbumsPage</requires>
+    <requires>EbonyFeaturesBrowserPlaylistsPlaylistsPage</requires>
+    <requires>EbonyFeaturesBrowserArtistsArtistsPage</requires>
+    <requires>EbonyFeaturesBrowserSearchSearchPage</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesPlayerPlayer" filename="Features/Player/Player.blp" sha256="10ff4a0bc183665a42ba1fbd6877c21edd5f400cdaa4041761eb485eba317895">
+    <requires>EbonyFeaturesPlayerQueueQueue</requires>
+    <requires>EbonyFeaturesPlayerPlaybackControls</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesShellMainPage" filename="Features/Shell/MainPage.blp" sha256="58341cf9e039b696cd1ff748239bfb87738ab370fc49f7e2b798c0a1a4f130db">
+    <requires>EbonyFeaturesPlayerBarPlayerBar</requires>
+    <requires>EbonyFeaturesBrowserBrowserHost</requires>
+    <requires>EbonyFeaturesPlayerPlayer</requires>
+  </ui>
+  <ui template-class="EbonyFeaturesShellMainWindow" filename="Features/Shell/MainWindow.blp" sha256="d34c66e7a4406c050a523acedf50ff2ef1c97d2028358cbc91a983ccf28ba70f">
+    <requires>EbonyFeaturesShellMainPage</requires>
+    <requires>EbonyFeaturesShellWelcomeWelcomePage</requires>
+    <requires>EbonyFeaturesShellConnectingPage</requires>
+  </ui>
+</cambalache-project>

@@ -1,0 +1,52 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesShellMainPage: Box {
+  Adw.MultiLayoutView multi-layout-view {
+    Adw.Layout sidebar-layout {
+      content: Adw.OverlaySplitView {
+        content: Adw.LayoutSlot {
+          id: "browser-layout-slot";
+        };
+
+        max-sidebar-width: 330;
+        min-sidebar-width: 330;
+
+        sidebar: Adw.LayoutSlot {
+          id: "player-layout-slot";
+        };
+
+        sidebar-position: end;
+        sidebar-width-fraction: 0;
+      };
+
+      name: "sidebar-layout";
+    }
+
+    Adw.Layout bottom-sheet-layout {
+      content: Adw.BottomSheet bottom-sheet {
+        bottom-bar: $EbonyFeaturesPlayerBarPlayerBar player-bar {};
+
+        content: Adw.Bin {
+          child: Adw.LayoutSlot {
+            id: "browser-layout-slot";
+          };
+
+          margin-bottom: 47;
+        };
+
+        sheet: Adw.LayoutSlot {
+          id: "player-layout-slot";
+        };
+      };
+
+      name: "bottom-sheet-layout";
+    }
+
+    [browser-layout-slot]
+    $EbonyFeaturesBrowserBrowserHost browser {}
+
+    [player-layout-slot]
+    $EbonyFeaturesPlayerPlayer player {}
+  }
+}

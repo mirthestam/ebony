@@ -1,0 +1,124 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EbonyFeaturesPlayerPlayer: Box {
+
+  Adw.ToolbarView {
+    content: Adw.ViewStack player-stack {
+      enable-transitions: true;
+      vhomogeneous: false;
+
+      Adw.ViewStackPage playlist-page {
+        child: Box playlist-holder {
+          hexpand: false;
+          orientation: vertical;
+          vexpand: true;
+
+          Revealer coverart-revealer {
+            child: Picture album-picture {
+              can-shrink: true;
+
+              css-classes: [
+                "cover",
+              ];
+
+              height-request: -1;
+              hexpand: false;
+              margin-bottom: 12;
+              margin-end: 12;
+              margin-start: 12;
+              margin-top: 0;
+              vexpand: false;
+            };
+
+            reveal-child: true;
+            transition-duration: 500;
+            transition-type: slide_down;
+            vexpand: false;
+          }
+
+          $EbonyFeaturesPlayerQueueQueue playlist {
+            vexpand: "True";
+          }
+        };
+
+        icon-name: "playlist-symbolic";
+        name: "playlist";
+        title: "Queue";
+      }
+
+      Adw.ViewStackPage lyrics-page {
+        child: Label {
+          label: "Insert Lyrics Custom Widget Here";
+        };
+
+        icon-name: "format-justify-left-symbolic";
+        name: "lyrics";
+        title: "Lyrics";
+        visible: false;
+      }
+    };
+
+    hexpand: true;
+    vexpand: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+
+      [start]
+      Adw.InlineViewSwitcher player-stack-switcher {
+        css-classes: [
+          "flat",
+        ];
+
+        display-mode: icons;
+        stack: player-stack;
+        visible: false;
+      }
+
+      [end]
+      MenuButton {
+        icon-name: "view-more-symbolic";
+        menu-model: queue-menu;
+      }
+    }
+
+    [bottom]
+    $EbonyFeaturesPlayerPlaybackControls playback-controls {
+      margin-top: "0";
+    }
+  }
+}
+
+menu queue-menu {
+  item {
+    action: "ebony-queue.shuffle";
+    label: "Shuffle Tracks";
+  }
+
+  item {
+    action: "ebony-queue.consume";
+    label: "Remove track after playback";
+  }
+
+  section {
+    item {
+      action: "ebony-queue.repeat";
+      label: "Repeat Disabled";
+      target: "Disabled";
+    }
+
+    item {
+      action: "ebony-queue.repeat";
+      label: "Repeat All";
+      target: "All";
+    }
+
+    item {
+      action: "ebony-queue.repeat";
+      label: "Repeat Track";
+      target: "Single";
+    }
+  }
+}

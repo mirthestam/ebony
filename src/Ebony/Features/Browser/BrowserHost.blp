@@ -1,0 +1,23 @@
+using Gtk 4.0;
+
+template $EbonyFeaturesBrowserBrowserHost: Box {
+  hexpand: true;
+  vexpand: true;
+
+  Stack browser-state-stack {
+    hexpand: true;
+    vexpand: true;
+
+    StackPage empty-state-page {
+      child: $EbonyFeaturesBrowserBrowserEmptyPage browser-empty-page {};
+
+      name: "empty-state-page";
+    }
+
+    StackPage browser-state-page {
+      child: $EbonyFeaturesBrowserBrowserPage browser-page {};
+
+      name: "browser-state-page";
+    }
+  }
+}

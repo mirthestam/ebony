@@ -1,0 +1,25 @@
+using Gtk 4.0;
+
+template $EbonyFeaturesPlayerMediaControls: Box {
+  halign: center;
+  hexpand: false;
+  spacing: 6;
+  vexpand: true;
+
+  Button skip-backward-button {
+    action-name: "ebony-player.previous";
+    icon-name: "media-skip-backward-symbolic";
+    tooltip-text: "Previous track";
+  }
+
+  $EbonyFeaturesSharedPlayButton playback-start-button {
+    action-name: "ebony-player.play-pause";
+    icon-name: "media-playback-start-symbolic";
+  }
+
+  Button skip-forward-button {
+    action-name: "ebony-player.next";
+    icon-name: "media-skip-forward-symbolic";
+    tooltip-text: "Next track";
+  }
+}

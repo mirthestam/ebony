@@ -22,8 +22,8 @@ if [ ! -d "$GIRCORE_DIR" ] || [ -z "$(ls -A "$GIRCORE_DIR" 2>/dev/null)" ]; then
   exit 1
 fi
 
-# Publish Aria
+# Publish Ebony
 echo "Info: building to '$TARGET_DIR'."
-dotnet publish ./src/Aria.App/Aria.App.csproj -o "$TARGET_DIR" -c Release --no-self-contained --source $NUGET_SOURCES_DIR
-cp ./src/Aria.App/bin/Release/net10.0/nl.mirthestam.aria.gresource "$TARGET_DIR"
+dotnet publish ./src/Ebony.App/Ebony.App.csproj -o "$TARGET_DIR" -c Release --no-self-contained --source $NUGET_SOURCES_DIR
+cp ./src/Ebony.App/bin/Release/net10.0/nl.mirthestam.ebony.gresource "$TARGET_DIR"
 echo "Info: Finished building to '$TARGET_DIR'"
